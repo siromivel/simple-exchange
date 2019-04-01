@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "install-modules": "cd browser && npm i && cd ../server && npm i && cd ..",
+    "build-dev": "cd browser && npm i && cd ../server && npm i && cd ..",
+    "webpack:dev": "(cd browser npx webpack --mode development --watch)",
+    "server:dev": "(cd server/ && npm run start:dev)",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

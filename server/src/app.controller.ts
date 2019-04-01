@@ -7,4 +7,9 @@ export class AppController {
   root(@Res() res): void {
     res.sendFile(path.resolve("../browser/index.html"))
   }
+
+  @Get("/dist/bundle.js")
+  bundle(@Res() res): void {
+    res.sendFile(path.resolve("../browser/dist/bundle.js"))
+  }
 }

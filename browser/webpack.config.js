@@ -3,13 +3,13 @@ const path = require("path")
 const webpack = require("webpack")
 
 module.exports = {
-    entry: path.resolve(__dirname, "browser/src/index.tsx"),
+    entry: path.resolve(__dirname, "src/index.tsx"),
     module: {
         rules: [
             {
                 test: /\.(ts|tsx)$/,
                 loader: "awesome-typescript-loader",
-                exclude: path.resolve(__dirname, 'server')
+                include: path.resolve(__dirname)
             },
             {
                 test: /\.css$/,
@@ -29,7 +29,7 @@ module.exports = {
         filename: "bundle.js"
     },
     devServer: {
-        contentBase: path.resolve(__dirname, "browser/"),
+        contentBase: path.resolve(__dirname),
         port: 3000,
         publicPath: "http://localhost:3000/dist/",
         hotOnly: true
