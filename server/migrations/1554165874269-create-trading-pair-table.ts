@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
 
-export class CreatePairTable1554170877809 implements MigrationInterface {
+export class CreatePairTable1554165874269 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.query(
       `CREATE TABLE "trading_pair" (

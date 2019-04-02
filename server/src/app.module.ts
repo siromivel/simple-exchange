@@ -11,14 +11,18 @@ import { tradingPairProviders } from "./modules/trading_pair/trading_pair.provid
 import { HoldingController } from "./modules/holding/holding.controller";
 import { HoldingModule } from "./modules/holding/holding.module";
 import { holdingProviders } from "./modules/holding/holding.providers";
-import { UserModule } from "./modules/user/user.module";
 import { UserController } from "./modules/user/user.controller";
+import { UserModule } from "./modules/user/user.module";
 import { userProviders } from "./modules/user/user.providers";
+import { OrderController } from "./modules/order/order.controller";
+import { OrderModule } from "./modules/order/order.module";
+import { orderProviders } from "./modules/order/order.providers";
 
 @Module({
   imports: [
     AssetModule,
     HoldingModule,
+    OrderModule,
     TradingPairModule,
     TypeOrmModule.forRoot(),
     UserModule
@@ -27,12 +31,14 @@ import { userProviders } from "./modules/user/user.providers";
     AppController,
     AssetController,
     HoldingController,
+    OrderController,
     TradingPairController,
     UserController
   ],
   providers: [
     ...assetProviders,
     ...holdingProviders,
+    ...orderProviders,
     ...tradingPairProviders,
     ...userProviders
   ],

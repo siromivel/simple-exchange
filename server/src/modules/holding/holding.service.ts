@@ -14,14 +14,7 @@ export class HoldingService {
         private readonly userRepository: Repository<User>
     ) {}
 
-    async findAll(): Promise<Holding[]> {
-        return await this.holdingRepository.find({
-            cache: true,
-            relations: ["asset"]
-        })
-    }
-
-    async findAllByUser(userId: number): Promise<Holding[]> {
+    async findByUserId(userId: number): Promise<Holding[]> {
         const user: User = await this.userRepository.findOne(userId)
 
         return await this.holdingRepository.find({

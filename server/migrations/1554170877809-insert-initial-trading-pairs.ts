@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
 
-export class InsertInitialTradingPairs1554171059005 implements MigrationInterface {
+export class InsertInitialTradingPairs1554170877809 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(
             `WITH us_dollar AS (SELECT id FROM asset WHERE symbol = 'USD'),

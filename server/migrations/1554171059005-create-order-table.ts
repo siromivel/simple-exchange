@@ -1,15 +1,15 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
 
-export class CreateOrderTable1554165874269 implements MigrationInterface {
+export class CreateOrderTable1554171059005 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.query(
       `CREATE TABLE "order" (
-          id serial PRIMARY KEY NOT NULL,
+          id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
           side text NOT NULL,
           open bool NOT NULL DEFAULT true,
           quantity decimal NOT NULL,
           filled decimal NOT NULL DEFAULT 0,
-          asset_id integer NOT NULL REFERENCES asset,
+          trading_pair_id integer NOT NULL REFERENCES trading_pair,
           exchange_user_id integer NOT NULL REFERENCES exchange_user
       )`,
     )

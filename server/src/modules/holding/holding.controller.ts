@@ -1,4 +1,4 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Param } from "@nestjs/common";
 import { Holding } from "./holding.entity";
 import { HoldingService } from "./holding.service";
 
@@ -6,8 +6,8 @@ import { HoldingService } from "./holding.service";
 export class HoldingController {
     constructor(private readonly holdingService: HoldingService) {}
 
-    @Get('')
-    async findAll(): Promise<Holding[]> {
-        return await this.holdingService.findAll()
+    @Get(':userId')
+    async findByUserId(@Param("userId") userId): Promise<Holding[]> {
+        return await this.holdingService.findByUserId(userId)
     }
 }
