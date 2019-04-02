@@ -3,7 +3,7 @@ import { TradingPair } from "./trading_pair.entity"
 
 export const tradingPairProviders = [
     {
-        provide: 'TradingPairRepository',
+        provide: "TradingPairRepository",
         useFactory: (conn: Connection) => conn.getRepository(TradingPair),
         inject: [Connection]
     }

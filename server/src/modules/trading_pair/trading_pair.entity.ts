@@ -1,13 +1,16 @@
-import { Entity, JoinColumn, PrimaryGeneratedColumn, OneToOne } from "typeorm"
+import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 import { Asset } from "../asset/asset.entity"
 
 @Entity()
 export class TradingPair {
-    @PrimaryGeneratedColumn() id: number
+    @PrimaryGeneratedColumn()
+    id: number
 
-    @OneToOne(type => Asset)
-    @JoinColumn({ name: "base_asset_id" }) baseAsset: Asset
+    @ManyToOne(type => Asset)
+    @JoinColumn({ name: "base_asset_id" })
+    baseAsset: Asset
 
-    @OneToOne(type => Asset)
-    @JoinColumn({ name: "to_asset_id" }) toAsset: Asset
+    @ManyToOne(type => Asset)
+    @JoinColumn({ name: "to_asset_id" })
+    toAsset: Asset
 }

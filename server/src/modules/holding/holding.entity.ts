@@ -1,26 +1,20 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm"
 import { User } from "../user/user.entity"
 import { Asset } from "../asset/asset.entity"
 
   @Entity()
   export class Holding {
-    @PrimaryGeneratedColumn() id: number
+    @PrimaryGeneratedColumn()
+    id: number
 
-    @Column() side: string
+    @Column()
+    balance: number
 
-    @Column() userId: number
-
-    @Column() open: boolean
-
-    @Column() price: number
-
-    @Column() quantity: number
-
-    @Column() filled: number
-
-    @ManyToOne(type => Asset, asset => asset.holdings)
+    @ManyToOne(type => Asset)
+    @JoinColumn({ name: "asset_id" })
     asset: Asset
 
-    @ManyToOne(type => User, user => user.holdings)
+    @ManyToOne(type => User)
+    @JoinColumn({ name: "exchange_user_id" })
     user: User
 }

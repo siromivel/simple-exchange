@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
-import { TradingPairService } from "./trading_pair.service";
 import { tradingPairProviders } from "./trading_pair.providers";
+import { TradingPairService } from "./trading_pair.service";
 
 @Module({
     imports: [],

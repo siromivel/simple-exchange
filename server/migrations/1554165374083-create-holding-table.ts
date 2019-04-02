@@ -7,7 +7,7 @@ export class CreateHoldingTable1554165374083 implements MigrationInterface {
           id serial PRIMARY KEY NOT NULL,
           balance decimal NOT NULL DEFAULT 0,
           asset_id integer NOT NULL REFERENCES asset,
-          user_id integer NOT NULL REFERENCES exchange_user
+          exchange_user_id integer NOT NULL REFERENCES exchange_user
       )`,
     )
   }
