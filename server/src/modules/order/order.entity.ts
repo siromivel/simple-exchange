@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm"
+import { User } from "../user/user.entity";
 
   @Entity()
   export class Order {
@@ -15,4 +16,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from "typeorm"
     @Column() quantity: number
 
     @Column() filled: number
+
+    @ManyToOne(type => User, user => user.orders)
+    user: User
 }
