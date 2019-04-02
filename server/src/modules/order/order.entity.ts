@@ -1,14 +1,12 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm"
 import { User } from "../user/user.entity"
-import { TradingPair } from "../trading_pair/trading_pair.entity";
+import { TradingPair } from "../trading_pair/trading_pair.entity"
 
   @Entity()
   export class Order {
     @PrimaryGeneratedColumn() id: string
 
     @Column() side: string
-
-    @Column() userId: number
 
     @Column() open: boolean
 

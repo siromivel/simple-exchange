@@ -1,6 +1,6 @@
-import { Controller, Get, Param } from "@nestjs/common";
-import { Holding } from "./holding.entity";
-import { HoldingService } from "./holding.service";
+import { Controller, Get, Param } from "@nestjs/common"
+import { Holding } from "./holding.entity"
+import { HoldingService } from "./holding.service"
 
 @Controller("holdings")
 export class HoldingController {

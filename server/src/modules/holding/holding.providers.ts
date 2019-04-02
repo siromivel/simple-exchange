@@ -1,5 +1,5 @@
-import { Connection } from "typeorm";
-import { Holding } from "./holding.entity";
+import { Connection } from "typeorm"
+import { Holding } from "./holding.entity"
 
 export const holdingProviders = [
     {

@@ -1,8 +1,8 @@
-import { Module } from "@nestjs/common";
+import { Module } from "@nestjs/common"
 import { holdingProviders } from "./holding.providers"
-import { HoldingService } from "./holding.service";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { User } from "../user/user.entity";
+import { HoldingService } from "./holding.service"
+import { TypeOrmModule } from "@nestjs/typeorm"
+import { User } from "../user/user.entity"
 
 @Module({
     imports: [TypeOrmModule.forFeature([User])],

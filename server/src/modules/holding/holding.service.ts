@@ -1,8 +1,8 @@
-import { Injectable, Inject } from "@nestjs/common";
-import { Repository } from "typeorm";
-import { Holding } from "./holding.entity";
-import { InjectRepository } from "@nestjs/typeorm";
-import { User } from "../user/user.entity";
+import { Injectable, Inject } from "@nestjs/common"
+import { Repository } from "typeorm"
+import { Holding } from "./holding.entity"
+import { InjectRepository } from "@nestjs/typeorm"
+import { User } from "../user/user.entity"
 
 @Injectable()
 export class HoldingService {

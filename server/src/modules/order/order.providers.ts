@@ -1,5 +1,5 @@
-import { Connection } from "typeorm";
-import { Order } from "./order.entity";
+import { Connection } from "typeorm"
+import { Order } from "./order.entity"
 
 export const orderProviders = [
     {

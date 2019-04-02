@@ -1,6 +1,6 @@
-import { Controller, Get } from "@nestjs/common";
-import { TradingPair } from "./trading_pair.entity";
-import { TradingPairService } from "./trading_pair.service";
+import { Controller, Get } from "@nestjs/common"
+import { TradingPair } from "./trading_pair.entity"
+import { TradingPairService } from "./trading_pair.service"
 
 @Controller("pairs")
 export class TradingPairController {
