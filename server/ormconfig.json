@@ -1,0 +1,14 @@
+{
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "simplex",
+    "password": "password",
+    "database": "simple_exchange",
+    "entities": ["src/**/*.entity{.ts,.js}"],
+    "synchronize": true,
+    "migrations": ["migrations/*.ts"],
+    "cli": {
+      "migrationsDir": "migrations"
+    } 
+}
