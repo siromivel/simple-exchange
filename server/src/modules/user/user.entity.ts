@@ -4,12 +4,14 @@ import { Order } from "../order/order.entity"
 
   @Entity("exchange_user")
   export class User {
-    @PrimaryGeneratedColumn() id: number
+    @PrimaryGeneratedColumn()
+    id: number
   
-    @Column() name: string
+    @Column()
+    name: string
 
     @OneToMany(type => Order, order => order.user)
-    @JoinTable({ name: "order" })
+    @JoinTable({ name: "exchange_order" })
     orders: Order[]  
 
     @OneToMany(type => Holding, holding => holding.user)

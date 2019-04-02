@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm'
 export class CreateOrderTable1554171059005 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.query(
-      `CREATE TABLE "order" (
+      `CREATE TABLE exchange_order (
           id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
           side text NOT NULL,
           open bool NOT NULL DEFAULT true,
@@ -18,7 +18,7 @@ export class CreateOrderTable1554171059005 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.query(
-      `DROP TABLE "order"`,
+      `DROP TABLE exchange_order`,
     )
   }
 }

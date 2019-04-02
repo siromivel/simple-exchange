@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "t
 import { User } from "../user/user.entity"
 import { TradingPair } from "../trading_pair/trading_pair.entity"
 
-  @Entity()
+  @Entity("exchange_order")
   export class Order {
     @PrimaryGeneratedColumn() id: string
 

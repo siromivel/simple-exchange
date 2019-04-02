@@ -1,9 +1,9 @@
 export class Orderbook {
-    asks: {};
-    bids: {};
+    asks: {}
+    bids: {}
 
     constructor(bids: {} = {}, asks: {} = {}) {
-        this.asks = asks;
-        this.bids = bids;
+        this.asks = asks
+        this.bids = bids
     }
 }
