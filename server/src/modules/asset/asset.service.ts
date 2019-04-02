@@ -10,6 +10,6 @@ export class AssetService {
     ) {}
 
     async findAll(): Promise<Asset[]> {
-        return await this.assetRepository.find()
+        return await this.assetRepository.find({ cache: true })
     }
 }

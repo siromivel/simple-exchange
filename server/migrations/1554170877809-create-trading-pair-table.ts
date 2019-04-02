@@ -5,9 +5,9 @@ export class CreatePairTable1554170877809 implements MigrationInterface {
     await queryRunner.query(
       `CREATE TABLE "trading_pair" (
           id serial PRIMARY KEY NOT NULL,
-          base_currency_id integer NOT NULL REFERENCES asset,
-          to_currency_id integer NOT NULL REFERENCES asset,
-          UNIQUE (base_currency_id, to_currency_id)
+          base_asset_id integer NOT NULL REFERENCES asset,
+          to_asset_id integer NOT NULL REFERENCES asset,
+          UNIQUE (base_asset_id, to_asset_id)
       )`,
     )
   }
