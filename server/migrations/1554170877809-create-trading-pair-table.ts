@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class CreatePairTable1554170877809 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {

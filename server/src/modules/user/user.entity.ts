@@ -2,7 +2,7 @@ import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { Holding } from "../holding/holding.entity"
 import { Order } from "../order/order.entity"
 
-  @Entity()
+  @Entity('exchange_user')
   export class User {
     @PrimaryGeneratedColumn() id: number
   

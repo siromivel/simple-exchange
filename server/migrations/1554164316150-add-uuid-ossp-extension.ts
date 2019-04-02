@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class UuidOssp1554164316150 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {

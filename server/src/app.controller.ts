@@ -1,5 +1,5 @@
-import { Controller, Get, Res } from "@nestjs/common";
-import * as path from "path";
+import { Controller, Get, Res } from "@nestjs/common"
+import * as path from "path"
 
 @Controller()
 export class AppController {

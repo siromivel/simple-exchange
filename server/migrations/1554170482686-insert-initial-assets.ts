@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class InsertInitialAssets1554170482686 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {

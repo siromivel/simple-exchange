@@ -1,5 +1,5 @@
 import { Entity, Column, OneToMany, PrimaryGeneratedColumn} from "typeorm"
-import { Holding } from "../holding/holding.entity";
+import { Holding } from "../holding/holding.entity"
 
   @Entity()
   export class Asset {
@@ -7,7 +7,7 @@ import { Holding } from "../holding/holding.entity";
 
     @Column() name: string
 
-    @Column() symbol: string
+    @Column({ unique: true }) symbol: string
 
     @OneToMany(type => Holding, holding => holding.asset)
     holdings: Holding[]

@@ -6,9 +6,10 @@
     "password": "password",
     "database": "simple_exchange",
     "entities": ["src/**/*.entity{.ts,.js}"],
-    "synchronize": true,
+    "synchronize": false,
     "migrations": ["migrations/*.ts"],
     "cli": {
       "migrationsDir": "migrations"
-    } 
+    },
+    "logging": true
 }

@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm"
-import { User } from "../user/user.entity";
-import { Asset } from "../asset/asset.entity";
+import { User } from "../user/user.entity"
+import { Asset } from "../asset/asset.entity"
 
   @Entity()
   export class Holding {
