@@ -32,6 +32,11 @@ export class FillService {
       where: { id: fillDto.orderId },
     })
 
+    if (fill.quantity > fill.order.quantity)
+      throw new UnprocessableEntityException(
+        `Insufficient Volume in order: ${fill.order.id}`,
+      )
+
     await this.processFill(fill)
     return await this.fillRepository.save(fill)
   }
@@ -55,11 +60,6 @@ export class FillService {
   }
 
   private async processFill(fill: Fill): Promise<void> {
-    if (fill.quantity > fill.order.quantity)
-      throw new UnprocessableEntityException(
-        `Insufficient Volume in order: ${fill.order.id}`,
-      )
-
     const pair = await this.tradingPairRepository.findOneOrFail({
       relations: ["baseAsset", "toAsset"],
       where: { id: fill.order.tradingPair.id },

@@ -31,6 +31,11 @@ export class Order {
   quantity: number
 
   @Column()
+  @Column("numeric", {
+    precision: 7,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+  })
   filled: number
 
   @ManyToOne(type => TradingPair)
