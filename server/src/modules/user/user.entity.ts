@@ -6,7 +6,7 @@ import {
   JoinTable,
 } from "typeorm"
 import { Holding } from "../holding/holding.entity"
-import { Trade } from "../trade/trade.entity";
+import { Trade } from "../trade/trade.entity"
 
 @Entity("exchange_user")
 export class User {

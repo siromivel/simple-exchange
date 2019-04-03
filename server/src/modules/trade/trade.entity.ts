@@ -7,8 +7,8 @@ import {
 } from "typeorm"
 import { ColumnNumericTransformer } from "../common/transformers/ColumnNumericTransformer"
 import { User } from "../user/user.entity"
-import { TradingPair } from "../trading_pair/trading_pair.entity";
-import { tradingPairProviders } from "../trading_pair/trading_pair.providers";
+import { TradingPair } from "../trading_pair/trading_pair.entity"
+import { tradingPairProviders } from "../trading_pair/trading_pair.providers"
 
 @Entity()
 export class Trade {

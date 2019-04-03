@@ -23,9 +23,9 @@ export class UserService {
         "trades",
         "trades.tradingPair",
         "trades.tradingPair.baseAsset",
-        "trades.tradingPair.toAsset"
+        "trades.tradingPair.toAsset",
       ],
-      where: { id }
+      where: { id },
     })
   }
 }

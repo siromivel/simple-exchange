@@ -4,9 +4,7 @@ import { TradingPairService } from "./trading_pair.service"
 
 @Controller("pairs")
 export class TradingPairController {
-  constructor(
-    private readonly tradingPairService: TradingPairService,
-  ) {}
+  constructor(private readonly tradingPairService: TradingPairService) {}
 
   @Get()
   async findAll(): Promise<TradingPair[]> {
