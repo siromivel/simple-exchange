@@ -1,17 +1,13 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
 
-export class CreateOrderTable1554171059005 implements MigrationInterface {
+export class CreateTradeTable1554301961181 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.query(
-      `CREATE TABLE exchange_order (
+      `CREATE TABLE trade (
           id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
-          created timestamp NOT NULL DEFAULT now(),
-          side text NOT NULL,
-          open bool NOT NULL DEFAULT true,
-          cancelled bool NOT NULL DEFAULT false,
-          price decimal NOT NULL,
+          type text NOT NULL,
           quantity decimal NOT NULL,
-          filled decimal NOT NULL DEFAULT 0,
+          price decimal NOT NULL,
           trading_pair_id integer NOT NULL REFERENCES trading_pair,
           exchange_user_id integer NOT NULL REFERENCES exchange_user
       )`,
@@ -20,7 +16,7 @@ export class CreateOrderTable1554171059005 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.query(
-      `DROP TABLE exchange_order`,
+      `DROP TABLE trade`,
     )
   }
 }
