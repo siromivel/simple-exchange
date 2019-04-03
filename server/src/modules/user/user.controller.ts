@@ -1,10 +1,10 @@
 import { Controller, Get, Param } from "@nestjs/common"
 import { UserService } from "./user.service"
 import { User } from "./user.entity"
-import { OrderService } from "../order/order.service";
-import { Order } from "../order/order.entity";
-import { FillService } from "../fill/fill.service";
-import { Fill } from "../fill/fill.entity";
+import { OrderService } from "../order/order.service"
+import { Order } from "../order/order.entity"
+import { FillService } from "../fill/fill.service"
+import { Fill } from "../fill/fill.entity"
 
 @Controller("users")
 export class UserController {

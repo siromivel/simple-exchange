@@ -19,12 +19,16 @@ export class OrderService {
         private readonly userRepository: Repository<User>
     ) {}
 
+    async findById(id: string): Promise<Order> {
+        return await this.orderRepository.findOne(id)
+    }
+
     async findByUserId(userId: number): Promise<Order[]> {
         const user: User = await this.userRepository.findOne(userId)
 
         return await this.orderRepository.find({
             relations: ["tradingPair"],
-            where: { user: user }
+            where: { user }
         })
     }
 
@@ -52,7 +56,7 @@ export class OrderService {
         return await this.orderRepository.find({
             relations: ["tradingPair"],
             order: { price: "ASC" },
-            where: { side: "ask", tradingPair: tradingPair }
+            where: { side: "ask", tradingPair }
         })
     }
 
@@ -62,7 +66,7 @@ export class OrderService {
         return await this.orderRepository.find({
             relations: ["tradingPair"],
             order: { price: "DESC" },
-            where: { side: "bid", tradingPair: tradingPair }
+            where: { side: "bid", tradingPair }
         })
     }
 }

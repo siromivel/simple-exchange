@@ -18,9 +18,8 @@ export class HoldingService {
         const user: User = await this.userRepository.findOne(userId)
 
         return await this.holdingRepository.find({
-            cache: true,
             relations: ["asset"],
-            where: { user: user }
+            where: { user }
         })
     }
 }

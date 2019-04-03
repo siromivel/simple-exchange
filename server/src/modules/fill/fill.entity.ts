@@ -1,13 +1,18 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm"
 import { Order } from "../order/order.entity"
 import { User } from "../user/user.entity"
+import { ColumnNumericTransformer } from "../common/transformers/ColumnNumericTransformer"
 
 @Entity()
 export class Fill {
     @PrimaryGeneratedColumn()
     id: string
 
-    @Column()
+    @Column('numeric', {
+        precision: 7,
+        scale: 2,
+        transformer: new ColumnNumericTransformer()
+    })
     quantity: number
 
     @ManyToOne(type => Order)
