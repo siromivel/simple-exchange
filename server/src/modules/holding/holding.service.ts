@@ -6,20 +6,19 @@ import { User } from "../user/user.entity"
 
 @Injectable()
 export class HoldingService {
-    constructor(
-        @InjectRepository(Holding)
-        private readonly holdingRepository: Repository<Holding>,
+  constructor(
+    @InjectRepository(Holding)
+    private readonly holdingRepository: Repository<Holding>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
 
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>
-    ) {}
+  async findByUserId(userId: number): Promise<Holding[]> {
+    const user: User = await this.userRepository.findOne(userId)
 
-    async findByUserId(userId: number): Promise<Holding[]> {
-        const user: User = await this.userRepository.findOne(userId)
-
-        return await this.holdingRepository.find({
-            relations: ["asset"],
-            where: { user }
-        })
-    }
+    return await this.holdingRepository.find({
+      relations: ["asset"],
+      where: { user },
+    })
+  }
 }

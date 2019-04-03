@@ -4,10 +4,10 @@ import { AssetService } from "./asset.service"
 
 @Controller("assets")
 export class AssetController {
-    constructor(private readonly assetService: AssetService) {}
+  constructor(private readonly assetService: AssetService) {}
 
-    @Get()
-    async findAll(): Promise<Asset[]> {
-        return await this.assetService.findAll()
-    }
+  @Get()
+  async findAll(): Promise<Asset[]> {
+    return await this.assetService.findAll()
+  }
 }

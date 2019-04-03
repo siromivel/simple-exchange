@@ -1,4 +1,10 @@
-import { Entity, Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import {
+  Entity,
+  Column,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm"
 import { User } from "../user/user.entity"
 import { Asset } from "../asset/asset.entity"
 import { ColumnNumericTransformer } from "../common/transformers/ColumnNumericTransformer"
@@ -8,10 +14,10 @@ export class Holding {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column('numeric', {
+  @Column("numeric", {
     precision: 7,
     scale: 2,
-    transformer: new ColumnNumericTransformer()
+    transformer: new ColumnNumericTransformer(),
   })
   balance: number
 

@@ -1,4 +1,4 @@
-import { Injectable,  UnprocessableEntityException } from "@nestjs/common"
+import { Injectable, UnprocessableEntityException } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { Repository } from "typeorm"
 import { Fill } from "./fill.entity"
@@ -10,103 +10,105 @@ import { Holding } from "../holding/holding.entity"
 
 @Injectable()
 export class FillService {
-    constructor(
-        @InjectRepository(Fill)
-        private readonly fillRepository: Repository<Fill>,
+  constructor(
+    @InjectRepository(Fill)
+    private readonly fillRepository: Repository<Fill>,
+    @InjectRepository(Holding)
+    private readonly holdingRepository: Repository<Holding>,
+    @InjectRepository(Order)
+    private readonly orderRepository: Repository<Order>,
+    @InjectRepository(TradingPair)
+    private readonly tradingPairRepository: Repository<TradingPair>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
 
-        @InjectRepository(Holding)
-        private readonly holdingRepository: Repository<Holding>,
+  async findByOrderId(orderId: string): Promise<Fill[]> {
+    const order: Order = await this.orderRepository.findOne(orderId)
 
-        @InjectRepository(Order)
-        private readonly orderRepository: Repository<Order>,
+    return await this.fillRepository.find({
+      relations: ["order", "user"],
+      where: { order },
+    })
+  }
 
-        @InjectRepository(TradingPair)
-        private readonly tradingPairRepository: Repository<TradingPair>,
+  async findByUserId(userId: number): Promise<Fill[]> {
+    const user: User = await this.userRepository.findOne(userId)
 
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>
-    ) {}
+    return await this.fillRepository.find({
+      relations: ["order", "user"],
+      where: { user },
+    })
+  }
 
-    async findByOrderId(orderId: string): Promise<Fill[]> {
-        const order: Order = await this.orderRepository.findOne(orderId)
+  async createAndSave(fillDto: FillDto): Promise<Fill> {
+    const fill = await this.fillRepository.create(fillDto)
 
-        return await this.fillRepository.find({
-            relations: ["order", "user"],
-            where: { order }
-        })
-    }
+    fill.user = await this.userRepository.findOneOrFail(fillDto.userId)
+    fill.order = await this.orderRepository.findOneOrFail({
+      relations: ["tradingPair"],
+      where: { id: fillDto.orderId },
+    })
 
-    async findByUserId(userId: number): Promise<Fill[]> {
-        const user: User = await this.userRepository.findOne(userId)
+    await this.processFill(fill)
+    return await this.fillRepository.save(fill)
+  }
 
-        return await this.fillRepository.find({
-            relations: ["order", "user"],
-            where: { user }
-        })
-    }
+  private async processFill(fill: Fill): Promise<void> {
+    if (fill.quantity > fill.order.quantity)
+      throw new UnprocessableEntityException(
+        `Insufficient Volume in order: ${fill.order.id}`,
+      )
 
-    async createAndSave(fillDto: FillDto): Promise<Fill> {
-        const fill = await this.fillRepository.create(fillDto)
+    const pair = await this.tradingPairRepository.findOneOrFail({
+      relations: ["baseAsset", "toAsset"],
+      where: { id: fill.order.tradingPair.id },
+    })
 
-        fill.user = await this.userRepository.findOneOrFail(fillDto.userId)
-        fill.order = await this.orderRepository.findOneOrFail({
-            relations: ["tradingPair"],
-            where: { id: fillDto.orderId }
-        })
+    const holdings = await this.getUserHoldings(pair, fill.user.id)
 
-        await this.processFill(fill)
-        return await this.fillRepository.save(fill)
-    }
+    const cost = fill.quantity * fill.order.price
+    const baseBalance = holdings[pair.baseAsset.symbol].balance || 0
+    const toBalance = holdings[pair.toAsset.symbol].balance || 0
 
-    private async processFill(fill: Fill): Promise<void> {
-        if (fill.quantity > fill.order.quantity)
-            throw new UnprocessableEntityException(`Insufficient Volume in order: ${fill.order.id}`)
-
-        const pair = await this.tradingPairRepository.findOneOrFail({
-            relations: ["baseAsset", "toAsset"],
-            where: { id: fill.order.tradingPair.id }
-        })
-
-        const holdings = await this.getUserHoldings(pair, fill.user.id)
-
-        const cost = fill.quantity * fill.order.price
-        const baseBalance = holdings[pair.baseAsset.symbol].balance || 0
-        const toBalance = holdings[pair.toAsset.symbol].balance || 0
-
-        switch(fill.order.side) {
-            case "ask":
-                if ((baseBalance * fill.order.price) - cost >= 0) {
-                    holdings[pair.baseAsset.symbol].balance -= cost
-                    holdings[pair.toAsset.symbol].balance += fill.quantity
-                    break
-                }
-            case "bid":
-                if (toBalance - fill.quantity >= 0) {
-                    holdings[pair.toAsset.symbol].balance -= fill.quantity
-                    holdings[pair.baseAsset.symbol].balance += cost
-                    break
-                }
-            default:
-                throw new UnprocessableEntityException(`Insufficient funds`)
+    switch (fill.order.side) {
+      case "ask":
+        if (baseBalance * fill.order.price - cost >= 0) {
+          holdings[pair.baseAsset.symbol].balance -= cost
+          holdings[pair.toAsset.symbol].balance += fill.quantity
+          break
         }
-
-        fill.order.quantity -= fill.quantity
-
-        await this.orderRepository.save(fill.order)
-        await this.holdingRepository.save(holdings[pair.baseAsset.symbol])
-        await this.holdingRepository.save(holdings[pair.toAsset.symbol])
+      case "bid":
+        if (toBalance - fill.quantity >= 0) {
+          holdings[pair.toAsset.symbol].balance -= fill.quantity
+          holdings[pair.baseAsset.symbol].balance += cost
+          break
+        }
+      default:
+        throw new UnprocessableEntityException(`Insufficient funds`)
     }
 
-    private async getUserHoldings(pair, userId): Promise<{}> {
-        return this.userRepository.findOne({
-            relations: ["holdings", "holdings.asset"],
-            where: { id: userId }
-        }).then((user) => {
-            return user.holdings.reduce((acc, holding) => {
-                const symbol = [pair.baseAsset, pair.toAsset].find(asset => asset.id === holding.asset.id).symbol
-                acc[symbol] = holding
-                return acc
-            }, {})
-        })
-    }
+    fill.order.quantity -= fill.quantity
+
+    await this.orderRepository.save(fill.order)
+    await this.holdingRepository.save(holdings[pair.baseAsset.symbol])
+    await this.holdingRepository.save(holdings[pair.toAsset.symbol])
+  }
+
+  private async getUserHoldings(pair, userId): Promise<{}> {
+    return this.userRepository
+      .findOne({
+        relations: ["holdings", "holdings.asset"],
+        where: { id: userId },
+      })
+      .then(user => {
+        return user.holdings.reduce((acc, holding) => {
+          const symbol = [pair.baseAsset, pair.toAsset].find(
+            asset => asset.id === holding.asset.id,
+          ).symbol
+          acc[symbol] = holding
+          return acc
+        }, {})
+      })
+  }
 }

@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm"
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm"
 import { User } from "../user/user.entity"
 import { TradingPair } from "../trading_pair/trading_pair.entity"
 import { ColumnNumericTransformer } from "../common/transformers/ColumnNumericTransformer"
@@ -14,10 +20,10 @@ export class Order {
   open: boolean
 
   @Column()
-  @Column('numeric', {
+  @Column("numeric", {
     precision: 7,
     scale: 2,
-    transformer: new ColumnNumericTransformer()
+    transformer: new ColumnNumericTransformer(),
   })
   price: number
 

@@ -5,15 +5,15 @@ import { InjectRepository } from "@nestjs/typeorm"
 
 @Injectable()
 export class TradingPairService {
-    constructor(
-        @InjectRepository(TradingPair)
-        private readonly tradingPairRepository: Repository<TradingPair>
-    ) {}
+  constructor(
+    @InjectRepository(TradingPair)
+    private readonly tradingPairRepository: Repository<TradingPair>,
+  ) {}
 
-    async findAll(): Promise<TradingPair[]> {
-        return await this.tradingPairRepository.find({
-            cache: true,
-            relations: ["baseAsset", "toAsset"]
-        })
-    }
+  async findAll(): Promise<TradingPair[]> {
+    return await this.tradingPairRepository.find({
+      cache: true,
+      relations: ["baseAsset", "toAsset"],
+    })
+  }
 }

@@ -8,24 +8,24 @@ import { Fill } from "../fill/fill.entity"
 
 @Controller("users")
 export class UserController {
-    constructor(
-        private readonly fillService: FillService,
-        private readonly orderService: OrderService,
-        private readonly userService: UserService
-    ) {}
+  constructor(
+    private readonly fillService: FillService,
+    private readonly orderService: OrderService,
+    private readonly userService: UserService,
+  ) {}
 
-    @Get()
-    async findAll(): Promise<User[]> {
-        return await this.userService.findAll()
-    }
+  @Get()
+  async findAll(): Promise<User[]> {
+    return await this.userService.findAll()
+  }
 
-    @Get(":id/fills")
-    async findFillsByUserId(@Param("id") userId: number): Promise<Fill[]> {
-        return await this.fillService.findByUserId(userId)
-    }
+  @Get(":id/fills")
+  async findFillsByUserId(@Param("id") userId: number): Promise<Fill[]> {
+    return await this.fillService.findByUserId(userId)
+  }
 
-    @Get(":id/orders")
-    async findOrdersByUserId(@Param("id") userId: number): Promise<Order[]> {
-        return await this.orderService.findByUserId(userId)
-    }
+  @Get(":id/orders")
+  async findOrdersByUserId(@Param("id") userId: number): Promise<Order[]> {
+    return await this.orderService.findByUserId(userId)
+  }
 }

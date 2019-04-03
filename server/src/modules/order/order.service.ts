@@ -8,65 +8,73 @@ import { Orderbook } from "./orderbook.dto"
 
 @Injectable()
 export class OrderService {
-    constructor(
-        @InjectRepository(Order)
-        private readonly orderRepository: Repository<Order>,
+  constructor(
+    @InjectRepository(Order)
+    private readonly orderRepository: Repository<Order>,
+    @InjectRepository(TradingPair)
+    private readonly tradingPairRepository: Repository<TradingPair>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
 
-        @InjectRepository(TradingPair)
-        private readonly tradingPairRepository: Repository<TradingPair>,
+  async findById(id: string): Promise<Order> {
+    return await this.orderRepository.findOne(id)
+  }
 
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>
-    ) {}
+  async findByUserId(userId: number): Promise<Order[]> {
+    const user: User = await this.userRepository.findOne(userId)
 
-    async findById(id: string): Promise<Order> {
-        return await this.orderRepository.findOne(id)
-    }
+    return await this.orderRepository.find({
+      relations: ["tradingPair"],
+      where: { user },
+    })
+  }
 
-    async findByUserId(userId: number): Promise<Order[]> {
-        const user: User = await this.userRepository.findOne(userId)
+  async findOrderBookByTradingPairId(
+    tradingPairId: number,
+  ): Promise<Orderbook> {
+    const asks = await this.findAllAsksByTradingPairId(tradingPairId)
+    const bids = await this.findAllBidsByTradingPairId(tradingPairId)
+    const orderbook = new Orderbook()
 
-        return await this.orderRepository.find({
-            relations: ["tradingPair"],
-            where: { user }
-        })
-    }
+    asks.forEach(
+      (ask: Order) =>
+        (orderbook.asks[ask.price] = orderbook.asks[ask.price]
+          ? orderbook.asks[ask.price] + ask.quantity
+          : ask.quantity),
+    )
 
-    async findOrderBookByTradingPairId(tradingPairId: number): Promise<Orderbook> {
-        const asks = await this.findAllAsksByTradingPairId(tradingPairId)
-        const bids = await this.findAllBidsByTradingPairId(tradingPairId)
-        const orderbook = new Orderbook()
+    bids.forEach(
+      (bid: Order) =>
+        (orderbook.bids[bid.price] = orderbook.bids[bid.price]
+          ? orderbook.bids[bid.price] + bid.quantity
+          : bid.quantity),
+    )
 
-        asks.forEach((ask: Order) =>
-            orderbook.asks[ask.price] = orderbook.asks[ask.price] ?
-                orderbook.asks[ask.price] + ask.quantity : ask.quantity
-        )
+    return orderbook
+  }
 
-        bids.forEach((bid: Order) =>
-            orderbook.bids[bid.price] = orderbook.bids[bid.price] ?
-                orderbook.bids[bid.price] + bid.quantity : bid.quantity
-        )
-    
-        return orderbook
-    }
+  async findAllAsksByTradingPairId(tradingPairId: number): Promise<Order[]> {
+    const tradingPair: TradingPair = await this.tradingPairRepository.findOne(
+      tradingPairId,
+    )
 
-    async findAllAsksByTradingPairId(tradingPairId: number): Promise<Order[]> {
-        const tradingPair: TradingPair = await this.tradingPairRepository.findOne(tradingPairId)
+    return await this.orderRepository.find({
+      relations: ["tradingPair"],
+      order: { price: "ASC" },
+      where: { side: "ask", tradingPair },
+    })
+  }
 
-        return await this.orderRepository.find({
-            relations: ["tradingPair"],
-            order: { price: "ASC" },
-            where: { side: "ask", tradingPair }
-        })
-    }
+  async findAllBidsByTradingPairId(tradingPairId: number): Promise<Order[]> {
+    const tradingPair: TradingPair = await this.tradingPairRepository.findOne(
+      tradingPairId,
+    )
 
-    async findAllBidsByTradingPairId(tradingPairId: number): Promise<Order[]> {
-        const tradingPair: TradingPair = await this.tradingPairRepository.findOne(tradingPairId)
-
-        return await this.orderRepository.find({
-            relations: ["tradingPair"],
-            order: { price: "DESC" },
-            where: { side: "bid", tradingPair }
-        })
-    }
+    return await this.orderRepository.find({
+      relations: ["tradingPair"],
+      order: { price: "DESC" },
+      where: { side: "bid", tradingPair },
+    })
+  }
 }

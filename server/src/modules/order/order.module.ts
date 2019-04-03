@@ -7,13 +7,12 @@ import { TradingPair } from "../trading_pair/trading_pair.entity"
 import { Fill } from "../fill/fill.entity"
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([Fill]),
-        TypeOrmModule.forFeature([TradingPair]),
-        TypeOrmModule.forFeature([User])
-    ],
-    providers: [OrderService, ...orderProviders],
-    exports: [OrderService]
+  imports: [
+    TypeOrmModule.forFeature([Fill]),
+    TypeOrmModule.forFeature([TradingPair]),
+    TypeOrmModule.forFeature([User]),
+  ],
+  providers: [OrderService, ...orderProviders],
+  exports: [OrderService],
 })
-
-export class OrderModule{}
+export class OrderModule {}

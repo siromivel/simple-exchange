@@ -6,18 +6,18 @@ import { FillDto } from "../fill/fill.dto"
 
 @Controller("orders")
 export class OrderController {
-    constructor(
-        private readonly fillService: FillService,
-        private readonly orderService: OrderService
-    ) {}
+  constructor(
+    private readonly fillService: FillService,
+    private readonly orderService: OrderService,
+  ) {}
 
-    @Post("fill")
-    async fillOrder(@Body() fill: FillDto): Promise<Fill> {
-        return await this.fillService.createAndSave(fill)
-    }
+  @Post("fill")
+  async fillOrder(@Body() fill: FillDto): Promise<Fill> {
+    return await this.fillService.createAndSave(fill)
+  }
 
-    @Get(":id/fills")
-    async findFillsByOrderId(@Param("id") id: string): Promise<Fill[]> {
-        return await this.fillService.findByOrderId(id)
-    }
+  @Get(":id/fills")
+  async findFillsByOrderId(@Param("id") id: string): Promise<Fill[]> {
+    return await this.fillService.findByOrderId(id)
+  }
 }

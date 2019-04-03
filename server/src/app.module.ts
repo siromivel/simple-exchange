@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common"
-import { TypeOrmModule } from '@nestjs/typeorm'
+import { TypeOrmModule } from "@nestjs/typeorm"
 import { AppController } from "./app.controller"
 
 import { AssetController } from "./modules/asset/asset.controller"
@@ -29,7 +29,7 @@ import { userProviders } from "./modules/user/user.providers"
     OrderModule,
     TradingPairModule,
     TypeOrmModule.forRoot(),
-    UserModule
+    UserModule,
   ],
   controllers: [
     AppController,
@@ -38,7 +38,7 @@ import { userProviders } from "./modules/user/user.providers"
     HoldingController,
     OrderController,
     TradingPairController,
-    UserController
+    UserController,
   ],
   providers: [
     ...assetProviders,
@@ -46,8 +46,7 @@ import { userProviders } from "./modules/user/user.providers"
     ...holdingProviders,
     ...orderProviders,
     ...tradingPairProviders,
-    ...userProviders
+    ...userProviders,
   ],
 })
-
 export class AppModule {}

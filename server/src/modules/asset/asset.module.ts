@@ -3,9 +3,8 @@ import { assetProviders } from "./asset.providers"
 import { AssetService } from "./asset.service"
 
 @Module({
-    imports: [],
-    providers: [AssetService, ...assetProviders],
-    exports: [AssetService]
+  imports: [],
+  providers: [AssetService, ...assetProviders],
+  exports: [AssetService],
 })
-
-export class AssetModule{}
+export class AssetModule {}

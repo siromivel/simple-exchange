@@ -4,14 +4,14 @@ import { User } from "./user.entity"
 
 @Injectable()
 export class UserService {
-    constructor(
-        @Inject("UserRepository")
-        private readonly userRepository: Repository<User>
-    ) {}
+  constructor(
+    @Inject("UserRepository")
+    private readonly userRepository: Repository<User>,
+  ) {}
 
-    async findAll(): Promise<User[]> {
-        return await this.userRepository.find({
-            cache: true
-        })
-    }
+  async findAll(): Promise<User[]> {
+    return await this.userRepository.find({
+      cache: true,
+    })
+  }
 }
