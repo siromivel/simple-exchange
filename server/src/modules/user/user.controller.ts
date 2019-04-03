@@ -12,4 +12,9 @@ export class UserController {
   async findAll(): Promise<User[]> {
     return await this.userService.findAll()
   }
+
+  @Get(":id")
+  async findOne(@Param("id") id: number): Promise<User> {
+    return this.userService.findOne(id)
+  }
 }
