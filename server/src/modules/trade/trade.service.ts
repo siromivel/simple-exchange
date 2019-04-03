@@ -10,6 +10,8 @@ import { Holding } from "../holding/holding.entity"
 @Injectable()
 export class TradeService {
   constructor(
+    @InjectRepository(Holding)
+    private readonly holdingRepository: Repository<Holding>,
     @InjectRepository(Trade)
     private readonly tradeRepository: Repository<Trade>,
     @InjectRepository(TradingPair)
@@ -26,10 +28,10 @@ export class TradeService {
       where: { tradingPairId: tradeDto.tradingPairId },
     })
 
-    let holdings = await this.getUserHoldings(
+    const holdings: {} = await this.getUserHoldings(
       trade.tradingPair,
       trade.user.id,
-    ).then(holdings => this.updateHoldings(trade, holdings))
+    ).then(async holdings => await this.updateHoldings(trade, holdings))
 
     return this.saveTradeAndHoldings(trade, holdings)
   }
@@ -70,7 +72,10 @@ export class TradeService {
       })
   }
 
-  private async saveTradeAndHoldings(trade: Trade, holdings: {}): Promise<Trade> {
+  private async saveTradeAndHoldings(
+    trade: Trade,
+    holdings: {},
+  ): Promise<Trade> {
     return await getConnection().transaction(async manager => {
       const holdingRepoInTx = manager.getRepository(Holding)
       const tradeRepoInTx = manager.getRepository(Trade)
@@ -85,12 +90,32 @@ export class TradeService {
     })
   }
 
-  private updateHoldings(trade: Trade, holdings: {}): {} {
-    const baseSymbol = trade.tradingPair.baseAsset.symbol
-    const baseBalance = holdings[baseSymbol].balance || 0
+  private async createHoldingForTrade(
+    symbol: string,
+    trade: Trade,
+  ): Promise<Holding> {
+    const baseAsset = trade.tradingPair.baseAsset
+    const toAsset = trade.tradingPair.toAsset
 
+    const newHolding = await this.holdingRepository.create()
+    newHolding.asset = symbol === baseAsset.symbol ? baseAsset : toAsset
+    newHolding.user = trade.user
+    newHolding.balance = 0
+
+    return newHolding
+  }
+
+  private async updateHoldings(trade: Trade, holdings: {}): Promise<{}> {
+    const baseSymbol = trade.tradingPair.baseAsset.symbol
     const toSymbol = trade.tradingPair.toAsset.symbol
-    const toBalance = holdings[toSymbol].balance || 0
+
+    if (!holdings[baseSymbol])
+      holdings[baseSymbol] = await this.createHoldingForTrade(baseSymbol, trade)
+    if (!holdings[toSymbol])
+      holdings[toSymbol] = await this.createHoldingForTrade(toSymbol, trade)
+
+    const baseBalance = holdings[baseSymbol].balance
+    const toBalance = holdings[toSymbol].balance
 
     if (trade.type === "buy") {
       if (baseBalance - trade.quantity * trade.price < 0)
