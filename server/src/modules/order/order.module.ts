@@ -5,10 +5,12 @@ import { OrderService } from "./order.service"
 import { orderProviders } from "./order.providers"
 import { TradingPair } from "../trading_pair/trading_pair.entity"
 import { Fill } from "../fill/fill.entity"
+import { Holding } from "../holding/holding.entity"
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Fill]),
+    TypeOrmModule.forFeature([Holding]),
     TypeOrmModule.forFeature([TradingPair]),
     TypeOrmModule.forFeature([User]),
   ],

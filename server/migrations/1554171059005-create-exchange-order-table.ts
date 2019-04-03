@@ -5,8 +5,10 @@ export class CreateOrderTable1554171059005 implements MigrationInterface {
     await queryRunner.query(
       `CREATE TABLE exchange_order (
           id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+          created timestamp NOT NULL DEFAULT now(),
           side text NOT NULL,
           open bool NOT NULL DEFAULT true,
+          cancelled bool NOT NULL DEFAULT false,
           price decimal NOT NULL,
           quantity decimal NOT NULL,
           filled decimal NOT NULL DEFAULT 0,

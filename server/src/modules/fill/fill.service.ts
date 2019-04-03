@@ -23,6 +23,19 @@ export class FillService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  async createAndSave(fillDto: FillDto): Promise<Fill> {
+    const fill = await this.fillRepository.create(fillDto)
+
+    fill.user = await this.userRepository.findOneOrFail(fillDto.userId)
+    fill.order = await this.orderRepository.findOneOrFail({
+      relations: ["tradingPair"],
+      where: { id: fillDto.orderId },
+    })
+
+    await this.processFill(fill)
+    return await this.fillRepository.save(fill)
+  }
+
   async findByOrderId(orderId: string): Promise<Fill[]> {
     const order: Order = await this.orderRepository.findOne(orderId)
 
@@ -39,19 +52,6 @@ export class FillService {
       relations: ["order", "user"],
       where: { user },
     })
-  }
-
-  async createAndSave(fillDto: FillDto): Promise<Fill> {
-    const fill = await this.fillRepository.create(fillDto)
-
-    fill.user = await this.userRepository.findOneOrFail(fillDto.userId)
-    fill.order = await this.orderRepository.findOneOrFail({
-      relations: ["tradingPair"],
-      where: { id: fillDto.orderId },
-    })
-
-    await this.processFill(fill)
-    return await this.fillRepository.save(fill)
   }
 
   private async processFill(fill: Fill): Promise<void> {
@@ -88,14 +88,22 @@ export class FillService {
         throw new UnprocessableEntityException(`Insufficient funds`)
     }
 
+    fill.order.filled += fill.quantity
     fill.order.quantity -= fill.quantity
 
-    await this.orderRepository.save(fill.order)
+    if (fill.order.quantity === 0) {
+      fill.order.open = false
+    }
+
     await this.holdingRepository.save(holdings[pair.baseAsset.symbol])
     await this.holdingRepository.save(holdings[pair.toAsset.symbol])
+    await this.orderRepository.save(fill.order)
   }
 
-  private async getUserHoldings(pair, userId): Promise<{}> {
+  private async getUserHoldings(
+    pair: TradingPair,
+    userId: number,
+  ): Promise<{}> {
     return this.userRepository
       .findOne({
         relations: ["holdings", "holdings.asset"],
