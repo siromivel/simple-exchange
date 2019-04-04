@@ -3,12 +3,12 @@ import { TradingPair } from "../types/TradingPair";
 import { OptionProps } from "../types/OptionProps";
 import { Select } from "./FormComponents/Select";
 
-export class TradingPairSelector extends PureComponent<{ onSelectTradingPair: Function }, { tradingPair: TradingPair | null, tradingPairList: []  }> {
+export class TradingPairSelector extends PureComponent<{ onSelectTradingPair: Function }, { tradingPairId: number, tradingPairList: []  }> {
     constructor(props: { onSelectTradingPair: Function }) {
         super(props)
 
         this.state = {
-            tradingPair: null,
+            tradingPairId: 1,
             tradingPairList: []
         }
 
@@ -33,14 +33,14 @@ export class TradingPairSelector extends PureComponent<{ onSelectTradingPair: Fu
     }
 
     async updateTradingPair(event: any) {
-        const tradingPair: TradingPair = this.state.tradingPairList[event.target.value -1]
-        await this.setState({ tradingPair })
-        await this.props.onSelectTradingPair(tradingPair)
+        const tradingPairId: number = parseInt(event.target.value)
+        await this.setState({ tradingPairId })
+        await this.props.onSelectTradingPair(tradingPairId)
     }
 
     render() {
         return (
-            <Select name="pair" title="Trading Pair" options={this.getTradingPairOptions()} handleChange={this.updateTradingPair} placeholder="Select Pair" value={this.state.tradingPair ? this.state.tradingPair.id : NaN}/>
+            <Select name="pair" title="Trading Pair" options={this.getTradingPairOptions()} handleChange={this.updateTradingPair} placeholder="Select Pair" value={this.state.tradingPairId}/>
         )
     }
 }

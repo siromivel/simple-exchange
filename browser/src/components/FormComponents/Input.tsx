@@ -9,7 +9,11 @@ export const Input = (props: InputProps) =>
             name={props.name}
             type={props.type}
             value={props.value}
-            onChange={e => props.handleChange(e.target.value)}
+            onChange={
+                e => props.type === "number"
+                    ? props.handleChange(parseFloat(e.target.value))
+                    : props.handleChange(e.target.value)
+            }
             placeholder={props.placeholder}
         />
     </div>
