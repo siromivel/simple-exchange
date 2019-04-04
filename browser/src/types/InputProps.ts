@@ -3,6 +3,8 @@ export type InputProps = {
     title: string
     type: string
     value: number | string
+    min?: number
+    max?: number
     handleChange: Function
     placeholder: string
 }

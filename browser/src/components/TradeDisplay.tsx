@@ -7,21 +7,23 @@ import { OptionProps } from "../types/OptionProps";
 import { Trade } from "../types/Trade";
 import { TradingPairSelector } from "./TradingPairSelector";
 
-export class TradeDisplay extends PureComponent<{ userId: number }, { tradingPairId: number, amount: number, type: string, typeList: ["buy", "sell"] }> {
+export class TradeDisplay extends PureComponent<{ userId: number }, { tradingPairId: number, quantity: number, type: string, typeList: ["buy", "sell"], tradeExecuted: boolean, tradeExecutionError: boolean }> {
     constructor(props: { userId: number }) {
         super(props)
 
-        this.handleClearTrade = this.handleClearTrade.bind(this)
-        this.handleAmountChange = this.handleAmountChange.bind(this)
+        this.clearTrade = this.clearTrade.bind(this)
+        this.handleQuantityChange = this.handleQuantityChange.bind(this)
         this.handlePairChange = this.handlePairChange.bind(this)
         this.handleSubmitTrade = this.handleSubmitTrade.bind(this)
         this.handleTypeChange = this.handleTypeChange.bind(this)
     
         this.state = {
-            amount: 0,
+            tradeExecutionError: false,
+            quantity: 0,
             tradingPairId: 1,
             type: "",
-            typeList: ["buy", "sell"]
+            typeList: ["buy", "sell"],
+            tradeExecuted: false
         }
     }
 
@@ -34,15 +36,16 @@ export class TradeDisplay extends PureComponent<{ userId: number }, { tradingPai
         })
     }
 
-    handleClearTrade() {
-        this.setState({ amount: 0 })
+    clearTrade() {
+        this.setState({ quantity: 0, type: "", tradeExecuted: false, tradeExecutionError: false })
     }
 
     async handleSubmitTrade() {
+        this.setState({ tradeExecuted: false, tradeExecutionError: false })
         const trade: Trade = {
             type: this.state.type,
             price: 3.50,
-            quantity: this.state.amount,
+            quantity: this.state.quantity || 0,
             tradingPairId: this.state.tradingPairId,
             userId: this.props.userId
         }
@@ -54,20 +57,23 @@ export class TradeDisplay extends PureComponent<{ userId: number }, { tradingPai
                 headers: { "Content-Type": "application/json" },
                 redirect: "error",
                 body: JSON.stringify(trade)
-            }).then(res => res.json())
+            }).then(res => res.json()
+            ).then(json => !json.statusCode ? this.setState({ tradeExecuted: true }) : this.setState({ tradeExecuted: false, tradeExecutionError: true }))
         }
     }
 
-    handleAmountChange(amount: number) {
-        this.setState({ amount })
-    }
-
     handlePairChange(tradingPairId: number) {
+        this.clearTrade()
         this.setState({ tradingPairId })
     }
 
     handleTypeChange(type: string) {
         this.setState({ type })
+    }
+
+    handleQuantityChange(quantity: number) {
+        quantity = quantity || 0
+        this.setState({ quantity, tradeExecutionError: false, tradeExecuted: false })
     }
 
     getTypeOptions(): OptionProps[] {
@@ -85,9 +91,11 @@ export class TradeDisplay extends PureComponent<{ userId: number }, { tradingPai
                 <h3>Trade</h3>
                 <TradingPairSelector onSelectTradingPair={this.handlePairChange}/>
                 <Select name="type" title="Type" placeholder="" value={this.state.type} options={this.getTypeOptions()} handleChange={(e: any) => this.handleTypeChange(e.target.value)} />
-                <Input name="amount" title="Amount" type="number" handleChange={this.handleAmountChange} placeholder="0" value={this.state.amount}/>
-                <Button title="Submit" action={this.handleSubmitTrade}/>
-                <Button title="Clear" action={this.handleClearTrade}/> 
+                <Input name="quantity" title="quantity" type="number" min={0} max={1000000000} handleChange={this.handleQuantityChange} placeholder="0" value={this.state.quantity}/>
+                <Button title="Submit" action={this.handleSubmitTrade} disabled={(!this.state.type || this.state.quantity <= 0)}/>
+                <Button title="Clear" action={this.clearTrade}/> 
+                { this.state.tradeExecuted ? <span color="green">Trade Executed Successfully</span> : "" }
+                { this.state.tradeExecutionError ? <span color="red">Trade Execution Error</span> : "" }
             </div>
         )
     }
