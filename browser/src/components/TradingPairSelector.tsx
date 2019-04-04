@@ -16,7 +16,10 @@ export class TradingPairSelector extends PureComponent<{ onSelectTradingPair: Fu
     }
 
     async componentDidMount() {
-        const tradingPairList = await fetch("http://localhost:3000/pairs").then((response: Response) => response.json())
+        const tradingPairList = await fetch("http://localhost:3000/pairs")
+            .then((response: Response) => response.json())
+            .then(json => json.sort((pair: TradingPair) => pair.id))
+
         await this.setState({ tradingPairList })
     }
 
@@ -30,7 +33,7 @@ export class TradingPairSelector extends PureComponent<{ onSelectTradingPair: Fu
     }
 
     async updateTradingPair(event: any) {
-        const tradingPair: TradingPair = this.state.tradingPairList[event.target.value]
+        const tradingPair: TradingPair = this.state.tradingPairList[event.target.value -1]
         await this.setState({ tradingPair })
         await this.props.onSelectTradingPair(tradingPair)
     }
