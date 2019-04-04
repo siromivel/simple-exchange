@@ -1,14 +1,15 @@
 import React, { PureComponent, FormEvent } from "react";
 import { Input } from "./FormComponents/Input";
 import { Button } from "./FormComponents/Button";
-import { TradingPair } from "../types/TradingPair";
 import { Select } from "./FormComponents/Select";
-import { OptionProps } from "../types/OptionProps";
-import { Trade } from "../types/Trade";
 import { TradingPairSelector } from "./TradingPairSelector";
+import { TradingPair } from "../types/TradingPair";
+import { Trade } from "../types/Trade";
+import { OptionProps } from "../types/OptionProps";
+import { Prices } from "../types/Prices";
 
-export class TradeDisplay extends PureComponent<{ userId: number }, { tradingPairId: number, quantity: number, type: string, typeList: ["buy", "sell"], tradeExecuted: boolean, tradeExecutionError: boolean }> {
-    constructor(props: { userId: number }) {
+export class TradeDisplay extends PureComponent<{ userId: number, pairs: any }, { tradingPairId: number, quantity: number, type: string, typeList: ["buy", "sell"], tradeExecuted: boolean, tradeExecutionError: boolean }> {
+    constructor(props: { userId: number, pairs: Prices }) {
         super(props)
 
         this.clearTrade = this.clearTrade.bind(this)
@@ -44,7 +45,7 @@ export class TradeDisplay extends PureComponent<{ userId: number }, { tradingPai
         this.setState({ tradeExecuted: false, tradeExecutionError: false })
         const trade: Trade = {
             type: this.state.type,
-            price: 3.50,
+            price: this.props.pairs["USD-BTC"].price,
             quantity: this.state.quantity || 0,
             tradingPairId: this.state.tradingPairId,
             userId: this.props.userId

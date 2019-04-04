@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
+import { Select } from "./FormComponents/Select";
 import { TradingPair } from "../types/TradingPair";
 import { OptionProps } from "../types/OptionProps";
-import { Select } from "./FormComponents/Select";
 
 export class TradingPairSelector extends PureComponent<{ onSelectTradingPair: Function }, { tradingPairId: number, tradingPairList: []  }> {
     constructor(props: { onSelectTradingPair: Function }) {

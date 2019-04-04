@@ -1,8 +1,7 @@
 import React, { PureComponent, FormEvent } from "react"
-import { User } from "../types/User";
 import { Select } from "./FormComponents/Select";
+import { User } from "../types/User";
 import { OptionProps } from "../types/OptionProps";
-import { EventEmitter } from "events";
 
 export class UserSelector extends PureComponent<{ onSelectUser: Function }, { user: User | null, userList: []  }> {
     constructor(props: { onSelectUser: Function }) {
