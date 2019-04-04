@@ -1,13 +1,16 @@
-import React, { PureComponent } from "react"
+import React, { PureComponent, FormEvent } from "react"
 import { User } from "../types/User";
+import { Select } from "./FormComponents/Select";
+import { OptionProps } from "../types/OptionProps";
+import { EventEmitter } from "events";
 
-export class UserSelector extends PureComponent<{ onSelectUser: Function }, { userList: User[] , user: User | null }> {
+export class UserSelector extends PureComponent<{ onSelectUser: Function }, { user: User | null, userList: []  }> {
     constructor(props: { onSelectUser: Function }) {
         super(props)
 
         this.state = {
-            userList: [],
-            user: null
+            user: null,
+            userList: []
         }
 
         this.updateUser = this.updateUser.bind(this)
@@ -16,6 +19,15 @@ export class UserSelector extends PureComponent<{ onSelectUser: Function }, { us
     async componentDidMount() {
         const userList = await fetch("http://localhost:3000/users").then((response: Response) => response.json())
         await this.setState({ userList })
+    }
+
+    getUserOptions(): OptionProps[] {
+        return this.state.userList.map((user: User): OptionProps => {
+            return {
+                title: user.name,
+                value: user.id
+            }
+        })
     }
 
     async updateUser(event: any) {
@@ -28,12 +40,7 @@ export class UserSelector extends PureComponent<{ onSelectUser: Function }, { us
 
     render() {
         return (
-            <select className="user-select" onChange={this.updateUser}>
-                { !this.state.user ? <option value=''></option> : "" }
-                {
-                    this.state.userList.map((user: { id: number, name: string }, idx) => <option key={idx} value={user.id}>{user.name}</option>)
-                }
-            </select>
+            <Select name="Select User" title="Select User" placeholder="Select User" value={this.state.user ? this.state.user.id : NaN} options={this.getUserOptions()} handleChange={this.updateUser} />
         )
     }
 }

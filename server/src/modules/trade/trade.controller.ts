@@ -2,7 +2,6 @@ import { Body, Controller, Post, UseInterceptors } from "@nestjs/common"
 import { Trade } from "./trade.entity"
 import { TradeDto } from "./trade.dto"
 import { TradeService } from "./trade.service"
-import { Transaction } from "typeorm"
 
 @Controller("trades")
 export class TradeController {

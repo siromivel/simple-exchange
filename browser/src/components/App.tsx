@@ -22,8 +22,9 @@ export class App extends PureComponent<{}, { user: User | null }> {
         <div className="main">
             <UserSelector onSelectUser={this.handleUser} />
             <PriceDisplay />
-            <TradeDisplay />
-            { this.state.user ? <PortfolioDisplay user={this.state.user} /> : "" }
+            {this.state.user 
+                ? [<PortfolioDisplay user={this.state.user} />, <TradeDisplay userId={this.state.user.id}/>] 
+                : "" }
         </div>
         )
     }

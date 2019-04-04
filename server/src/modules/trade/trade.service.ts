@@ -116,21 +116,23 @@ export class TradeService {
 
     const baseBalance = holdings[baseSymbol].balance
     const toBalance = holdings[toSymbol].balance
+    const quantity = +trade.quantity
+    const price = +trade.price
 
     if (trade.type === "buy") {
-      if (baseBalance - trade.quantity * trade.price < 0)
+      if (baseBalance - quantity * price < 0)
         throw new UnprocessableEntityException(
           `Insufficient ${baseSymbol} to execute trade`,
         )
-      holdings[baseSymbol].balance -= trade.quantity * trade.price
-      holdings[toSymbol].balance += trade.quantity
+      holdings[baseSymbol].balance -= quantity * price
+      holdings[toSymbol].balance += quantity
     } else if (trade.type === "sell") {
-      if (toBalance - trade.quantity < 0)
+      if (toBalance - quantity < 0)
         throw new UnprocessableEntityException(
           `Insufficient ${toSymbol} to execute trade`,
         )
-      holdings[toSymbol].balance -= trade.quantity
-      holdings[baseSymbol].balance += trade.quantity * trade.price
+      holdings[toSymbol].balance -= quantity
+      holdings[baseSymbol].balance += quantity * price
     }
 
     return holdings

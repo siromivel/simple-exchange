@@ -19,7 +19,7 @@ export class PortfolioDisplay extends PureComponent<{ user: any }, { user: any }
     render() {
         return (
             <div>
-                { this.state.user.name.split("").pop() === "s" ? this.state.user.name + "'" : this.state.user.name + " '" } Holdings
+                { this.state.user.name.split("").pop() === "s" ? this.state.user.name + "'" : this.state.user.name + "'s" } Holdings
                 <HoldingsList holdings={this.state.user.holdings}/>
             </div>
         )

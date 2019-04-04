@@ -18,15 +18,15 @@ export class Trade {
   type: string
 
   @Column("numeric", {
-    precision: 7,
-    scale: 2,
+    precision: 12,
+    scale: 4,
     transformer: new ColumnNumericTransformer(),
   })
   price: number
 
   @Column("numeric", {
-    precision: 7,
-    scale: 2,
+    precision: 12,
+    scale: 4,
     transformer: new ColumnNumericTransformer(),
   })
   quantity: number
