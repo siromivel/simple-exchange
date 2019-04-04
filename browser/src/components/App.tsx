@@ -7,12 +7,12 @@ import io from "socket.io-client"
 import { User } from "../types/User";
 import { Prices } from "../types/Prices";
 
-export class App extends PureComponent<{}, { user: User | null, prices: Prices | null }> {
+export class App extends PureComponent<{}, { user: User | null, pairMap: Prices | null }> {
     constructor(props: {}) {
         super(props)
         this.state = {
             user: null,
-            prices: null
+            pairMap: null
         }
     
         this.handleUser = this.handleUser.bind(this)
@@ -24,7 +24,7 @@ export class App extends PureComponent<{}, { user: User | null, prices: Prices |
 
     private openSocket() {
         const socket = io("ws://localhost:8080")
-        socket.on('price', (prices: Prices) => this.setState({ prices }))
+        socket.on('price', (pairMap: Prices) => this.setState({ pairMap }))
         socket.on('disconnect', this.openSocket)
     }
 
@@ -36,12 +36,12 @@ export class App extends PureComponent<{}, { user: User | null, prices: Prices |
         return (
         <div className="main">
             <UserSelector onSelectUser={this.handleUser} />
-            {this.state.prices
-                ? <PriceDisplay prices={this.state.prices} />
+            {this.state.pairMap
+                ? <PriceDisplay pairMap={this.state.pairMap} />
                 : ""
             }
-            {this.state.user && this.state.prices
-                ? [<PortfolioDisplay user={this.state.user} />, <TradeDisplay userId={this.state.user.id} pairs={this.state.prices}/>] 
+            {this.state.user && this.state.pairMap
+                ? [<PortfolioDisplay user={this.state.user} />, <TradeDisplay userId={this.state.user.id} pairMap={this.state.pairMap}/>] 
                 : "" 
             }
         </div>

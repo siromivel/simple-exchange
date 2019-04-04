@@ -1,4 +1,4 @@
-import React, { PureComponent, FormEvent } from "react";
+import React, { PureComponent } from "react";
 import { Input } from "./FormComponents/Input";
 import { Button } from "./FormComponents/Button";
 import { Select } from "./FormComponents/Select";
@@ -8,8 +8,8 @@ import { Trade } from "../types/Trade";
 import { OptionProps } from "../types/OptionProps";
 import { Prices } from "../types/Prices";
 
-export class TradeDisplay extends PureComponent<{ userId: number, pairs: any }, { tradingPairId: number, quantity: number, type: string, typeList: ["buy", "sell"], tradeExecuted: boolean, tradeExecutionError: boolean }> {
-    constructor(props: { userId: number, pairs: Prices }) {
+export class TradeDisplay extends PureComponent<{ userId: number, pairMap: any }, { activePair: string, quantity: number, type: string, typeList: ["buy", "sell"], tradeExecuted: boolean, tradeExecutionError: boolean }> {
+    constructor(props: { userId: number, pairMap: Prices }) {
         super(props)
 
         this.clearTrade = this.clearTrade.bind(this)
@@ -21,20 +21,11 @@ export class TradeDisplay extends PureComponent<{ userId: number, pairs: any }, 
         this.state = {
             tradeExecutionError: false,
             quantity: 0,
-            tradingPairId: 1,
+            activePair: "USD-BTC",
             type: "",
             typeList: ["buy", "sell"],
             tradeExecuted: false
         }
-    }
-
-    async componentDidMount() {
-        const tradingPairs = await fetch("http://localhost:3000/pairs").then(res => res.json())
-        const tradingPair = tradingPairs.find((pair: TradingPair) => pair.id === 1)
-
-        await this.setState({
-            tradingPairId: tradingPair.id
-        })
     }
 
     clearTrade() {
@@ -45,9 +36,9 @@ export class TradeDisplay extends PureComponent<{ userId: number, pairs: any }, 
         this.setState({ tradeExecuted: false, tradeExecutionError: false })
         const trade: Trade = {
             type: this.state.type,
-            price: this.props.pairs["USD-BTC"].price,
+            price: this.props.pairMap[this.state.activePair].price,
             quantity: this.state.quantity || 0,
-            tradingPairId: this.state.tradingPairId,
+            tradingPairId: this.props.pairMap[this.state.activePair].pair.id,
             userId: this.props.userId
         }
 
@@ -63,9 +54,9 @@ export class TradeDisplay extends PureComponent<{ userId: number, pairs: any }, 
         }
     }
 
-    handlePairChange(tradingPairId: number) {
+    handlePairChange(activePair: string) {
         this.clearTrade()
-        this.setState({ tradingPairId })
+        this.setState({ activePair })
     }
 
     handleTypeChange(type: string) {
@@ -90,7 +81,7 @@ export class TradeDisplay extends PureComponent<{ userId: number, pairs: any }, 
         return (
             <div className="trade-form">
                 <h3>Trade</h3>
-                <TradingPairSelector onSelectTradingPair={this.handlePairChange}/>
+                <TradingPairSelector activePair={this.state.activePair} pairMap={this.props.pairMap} onSelectTradingPair={this.handlePairChange}/>
                 <Select name="type" title="Type" placeholder="" value={this.state.type} options={this.getTypeOptions()} handleChange={(e: any) => this.handleTypeChange(e.target.value)} />
                 <Input name="quantity" title="quantity" type="number" min={0} max={1000000000} handleChange={this.handleQuantityChange} placeholder="0" value={this.state.quantity}/>
                 <Button title="Submit" action={this.handleSubmitTrade} disabled={(!this.state.type || this.state.quantity <= 0)}/>

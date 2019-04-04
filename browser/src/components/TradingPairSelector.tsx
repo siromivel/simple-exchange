@@ -3,13 +3,12 @@ import { Select } from "./FormComponents/Select";
 import { TradingPair } from "../types/TradingPair";
 import { OptionProps } from "../types/OptionProps";
 
-export class TradingPairSelector extends PureComponent<{ onSelectTradingPair: Function }, { tradingPairId: number, tradingPairList: []  }> {
-    constructor(props: { onSelectTradingPair: Function }) {
+export class TradingPairSelector extends PureComponent<{ onSelectTradingPair: Function, pairMap: any, activePair: string }> {
+    constructor(props: { onSelectTradingPair: Function, pairMap: any, activePair: string }) {
         super(props)
 
         this.state = {
             tradingPairId: 1,
-            tradingPairList: []
         }
 
         this.updateTradingPair = this.updateTradingPair.bind(this)
@@ -24,23 +23,24 @@ export class TradingPairSelector extends PureComponent<{ onSelectTradingPair: Fu
     }
 
     getTradingPairOptions(): OptionProps[] {
-        return this.state.tradingPairList.map((pair: TradingPair): OptionProps => {
-            return {
-                title: `${pair.baseAsset.symbol}:${pair.toAsset.symbol}`,
-                value: pair.id
-            }
-        })
+        const options: OptionProps[] = []
+
+        for (const pairName in this.props.pairMap) {
+            options.push({
+                title: `${this.props.pairMap[pairName].pair.baseAsset.symbol}:${this.props.pairMap[pairName].pair.toAsset.symbol}`,
+                value: pairName
+            })
+        }
+        return options
     }
 
     async updateTradingPair(event: any) {
-        const tradingPairId: number = parseInt(event.target.value)
-        await this.setState({ tradingPairId })
-        await this.props.onSelectTradingPair(tradingPairId)
+        await this.props.onSelectTradingPair(event.target.value)
     }
 
     render() {
         return (
-            <Select name="pair" title="Trading Pair" options={this.getTradingPairOptions()} handleChange={this.updateTradingPair} placeholder="Select Pair" value={this.state.tradingPairId}/>
+            <Select name="pair" title="Trading Pair" options={this.getTradingPairOptions()} handleChange={this.updateTradingPair} placeholder="Select Pair" value={this.props.activePair}/>
         )
     }
 }
