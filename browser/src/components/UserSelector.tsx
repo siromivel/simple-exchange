@@ -1,4 +1,4 @@
-import React, { PureComponent, FormEvent } from "react"
+import React, { PureComponent } from "react"
 import { Select } from "./FormComponents/Select"
 import { User } from "../types/User"
 import { OptionProps } from "../types/OptionProps"
@@ -36,8 +36,8 @@ export class UserSelector extends PureComponent<
     )
   }
 
-  async updateUser(event: any) {
-    const user: User = this.state.userList[event.target.value - 1]
+  async updateUser(event: React.FormEvent<HTMLSelectElement>) {
+    const user: User = this.state.userList[parseInt(event.currentTarget.value) - 1]
     await this.setState({ user })
 
     const fullUser = await fetch(
