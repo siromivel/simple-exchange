@@ -1,4 +1,4 @@
 export type BittrexLiteSummaryDelta = {
-    M: string
-    l: number
+  M: string
+  l: number
 }

@@ -17,7 +17,7 @@ import { BittrexMessage } from "../../types/BittrexMessage.type"
 import { BittrexMessageWrapper } from "../../types/BittrexMessageWrapper"
 import { BittrexLiteSummaryDelta } from "../../types/BittrexLiteSummaryDelta"
 import { Dictionary } from "../../types/Dictionary"
-import { BittrexLiteSummaryDeltas } from "src/types/BittrexLiteSummaryDeltas";
+import { BittrexLiteSummaryDeltas } from "src/types/BittrexLiteSummaryDeltas"
 
 @WebSocketGateway(8080)
 export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {

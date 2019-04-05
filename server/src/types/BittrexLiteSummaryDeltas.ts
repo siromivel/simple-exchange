@@ -1,5 +1,5 @@
-import { BittrexLiteSummaryDelta } from "./BittrexLiteSummaryDelta";
+import { BittrexLiteSummaryDelta } from "./BittrexLiteSummaryDelta"
 
 export type BittrexLiteSummaryDeltas = {
-    D: BittrexLiteSummaryDelta[]
+  D: BittrexLiteSummaryDelta[]
 }
