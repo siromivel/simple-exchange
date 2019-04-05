@@ -1,15 +1,19 @@
 import React from "react"
-import { Prices } from "../types/Prices";
+import { Dictionary } from "../types/Dictionary"
 
-const renderPriceForPairs = (pairMap: any): any => {
-    const priceElements = []
-    for (const pair in pairMap) {
-        priceElements.push(<div>{pair}: {pairMap[pair].price ? pairMap[pair].price.toFixed(8) : ""}</div>)
-    }
-    return priceElements
+const renderPriceForPairs = (Dictionary: Dictionary): JSX.Element[] => {
+  const priceElements = []
+  for (const pair in Dictionary) {
+    priceElements.push(
+      <div>
+        {pair}:{" "}
+        {Dictionary[pair].price ? Dictionary[pair].price.toFixed(8) : ""}
+      </div>,
+    )
+  }
+  return priceElements
 }
 
-export const PriceDisplay = (props: { pairMap: Prices }) =>
-        <div className="price-display">
-            {renderPriceForPairs(props.pairMap)}
-        </div>
+export const PriceDisplay = (props: { Dictionary: Dictionary }) => (
+  <div className="price-display">{renderPriceForPairs(props.Dictionary)}</div>
+)

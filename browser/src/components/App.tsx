@@ -1,50 +1,66 @@
 import React, { PureComponent } from "react"
-import { TradeDisplay } from "./TradeDisplay";
-import { PortfolioDisplay } from "./PortfolioDisplay";
-import { PriceDisplay } from "./PriceDisplay";
-import { UserSelector } from "./UserSelector";
+import { TradeDisplay } from "./TradeDisplay"
+import { PortfolioDisplay } from "./PortfolioDisplay"
+import { PriceDisplay } from "./PriceDisplay"
+import { UserSelector } from "./UserSelector"
 import io from "socket.io-client"
-import { User } from "../types/User";
-import { Prices } from "../types/Prices";
+import { User } from "../types/User"
+import { Dictionary } from "../types/Dictionary"
 
-export class App extends PureComponent<{}, { user: User | null, pairMap: Prices | null }> {
-    constructor(props: {}) {
-        super(props)
-        this.state = {
-            user: null,
-            pairMap: null
-        }
-    
-        this.handleUser = this.handleUser.bind(this)
+export class App extends PureComponent<
+  {},
+  { user: User | null; pairMap: Dictionary; pairDataLoaded: boolean }
+> {
+  constructor(props: {}) {
+    super(props)
+    this.state = {
+      user: null,
+      pairMap: {},
+      pairDataLoaded: false,
     }
 
-    componentDidMount() {
-        this.openSocket()
-    }
+    this.handleUser = this.handleUser.bind(this)
+  }
 
-    private openSocket() {
-        const socket = io("ws://localhost:8080")
-        socket.on('price', (pairMap: Prices) => this.setState({ pairMap }))
-        socket.on('disconnect', this.openSocket)
-    }
+  componentDidMount() {
+    this.openSocket()
+  }
 
-    async handleUser(user: User) {
-        await this.setState({ user })
-    }
+  private openSocket() {
+    const socket = io("ws://localhost:8080")
+    socket.on("price", (pairMap: Dictionary) =>
+      this.setState({ pairMap, pairDataLoaded: true }),
+    )
+    socket.on("disconnect", this.openSocket)
+  }
 
-    render() {
-        return (
-        <div className="main">
-            <UserSelector onSelectUser={this.handleUser} />
-            {this.state.pairMap
-                ? <PriceDisplay pairMap={this.state.pairMap} />
-                : ""
-            }
-            {this.state.user && this.state.pairMap
-                ? [<PortfolioDisplay pairMap={this.state.pairMap} user={this.state.user} />, <TradeDisplay userId={this.state.user.id} pairMap={this.state.pairMap}/>] 
-                : "" 
-            }
-        </div>
-        )
-    }
+  async handleUser(user: User) {
+    await this.setState({ user })
+  }
+
+  render() {
+    return (
+      <div className="main">
+        <UserSelector onSelectUser={this.handleUser} />
+        {this.state.pairDataLoaded ? (
+          <PriceDisplay Dictionary={this.state.pairMap} />
+        ) : (
+          ""
+        )}
+        {this.state.user && this.state.pairDataLoaded
+          ? [
+              <PortfolioDisplay
+                Dictionary={this.state.pairMap}
+                user={this.state.user}
+              />,
+              <TradeDisplay
+                user={this.state.user}
+                pairMap={this.state.pairMap}
+                onTrade={this.handleUser}
+              />,
+            ]
+          : ""}
+      </div>
+    )
+  }
 }
