@@ -1,5 +1,5 @@
 import React from "react"
-import { Holding } from "../types/Holding"
+import { Holding } from "../types/Holding";
 
 export const HoldingsList = (props: { holdings: Holding[] }) =>
     <ul>

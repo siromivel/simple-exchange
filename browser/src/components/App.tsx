@@ -41,7 +41,7 @@ export class App extends PureComponent<{}, { user: User | null, pairMap: Prices 
                 : ""
             }
             {this.state.user && this.state.pairMap
-                ? [<PortfolioDisplay user={this.state.user} />, <TradeDisplay userId={this.state.user.id} pairMap={this.state.pairMap}/>] 
+                ? [<PortfolioDisplay pairMap={this.state.pairMap} user={this.state.user} />, <TradeDisplay userId={this.state.user.id} pairMap={this.state.pairMap}/>] 
                 : "" 
             }
         </div>
