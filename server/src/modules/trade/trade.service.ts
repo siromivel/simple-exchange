@@ -114,7 +114,7 @@ export class TradeService {
       .then((data: string) => JSON.parse(data)[`${baseSymbol}-${toSymbol}`])
 
     if (!latestQuote || !latestQuote.price || trade.price !== latestQuote.price)
-      throw new UnprocessableEntityException("Invalid Price", "INVALID_PRICE")
+      throw new UnprocessableEntityException("Invalid Price")
 
     if (!holdings[baseSymbol])
       holdings[baseSymbol] = await this.createHoldingForTrade(baseSymbol, trade)
@@ -130,7 +130,6 @@ export class TradeService {
       if (baseBalance - quantity * price < 0)
         throw new UnprocessableEntityException(
           `Insufficient ${baseSymbol} to execute trade`,
-          `INSUFFICIENT_FUNDS`,
         )
       holdings[baseSymbol].balance -= quantity * price
       holdings[toSymbol].balance += quantity
@@ -138,7 +137,6 @@ export class TradeService {
       if (toBalance - quantity < 0)
         throw new UnprocessableEntityException(
           `Insufficient ${toSymbol} to execute trade`,
-          `INSUFFICIENT_FUNDS`,
         )
       holdings[toSymbol].balance -= quantity
       holdings[baseSymbol].balance += quantity * price
