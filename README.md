@@ -1,5 +1,4 @@
 ## Build and Run Locally
-
 In order to run the app you will need a local Redis and Postgresql installation.
 
 ##### Create a local user in Postgres
@@ -30,6 +29,9 @@ Test coverage is limited to critical components of the backend; run these with `
 
 ## General Architecture
 The backend exposes a REST API used for working with users, trades etc... and a WebSocket gateway that handles price data from Bittrex. The websocket gateway handles both receiving price data from the remote exchange as well as passing price updates to the frontend. Data about the latest observed prices of all supported assets is cached in a local Redis store; when a request to execute a trade is received the price sent from the browser is checked against the price for the relevant trading pair stored in Redis before allowing the trade to be executed.
+
+## Tools Used
+The primary technologies/tools used for this application are(in no particular order): NestJS, PostgreSQL, React, Redis, SocketIO, TypeScript and Webpack.
 
 ## Notes
 All of the requested functionality has been implemented in this app. The rough spots are around test coverage and error handling UX; the front end is not currently handling errors granuarly(or really at all 😅). I wrote integration tests for the most important backend features (executing trades and the user controller,) but otherwise there aren't a lot of tests. There are _no_ front end or end-to-end tests at this time.
