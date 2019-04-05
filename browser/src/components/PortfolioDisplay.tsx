@@ -38,10 +38,12 @@ export class PortfolioDisplay extends PureComponent<{
   render() {
     return (
       <div>
-        {this.props.user.name.split("").pop() === "s"
-          ? this.props.user.name + "'"
-          : this.props.user.name + "'s"}{" "}
-        Holdings
+        <h2>
+          {this.props.user.name.split("").pop() === "s"
+            ? this.props.user.name + "'"
+            : this.props.user.name + "'s"}{" "}
+          Holdings
+        </h2>
         <HoldingsList holdings={this.props.user.holdings} />
         <h4>
           Total Portfolio Value in US Dollars: {this.calculatePortfolioValue()}

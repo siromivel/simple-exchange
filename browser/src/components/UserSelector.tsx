@@ -49,10 +49,10 @@ export class UserSelector extends PureComponent<
   render() {
     return (
       <Select
-        name="Select User"
-        title="Select User"
+        name="User"
+        title="User"
         placeholder="Select User"
-        value={this.state.user ? this.state.user.id : NaN}
+        value={this.state.user ? this.state.user.id : ""}
         options={this.getUserOptions()}
         handleChange={this.updateUser}
       />

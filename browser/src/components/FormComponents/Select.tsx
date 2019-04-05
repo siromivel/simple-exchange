@@ -11,7 +11,7 @@ export const Select = (props: SelectProps) => (
       onChange={e => props.handleChange(e)}
     >
       {!props.value ? (
-        <option value="" selected={true} disabled>
+        <option value="" disabled>
           {props.placeholder}
         </option>
       ) : (

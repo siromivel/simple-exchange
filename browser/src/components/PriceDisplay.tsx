@@ -15,5 +15,8 @@ const renderPriceForPairs = (Dictionary: Dictionary): JSX.Element[] => {
 }
 
 export const PriceDisplay = (props: { Dictionary: Dictionary }) => (
-  <div className="price-display">{renderPriceForPairs(props.Dictionary)}</div>
+  <div className="price-display">
+    <h2>Current Prices:</h2>
+    {renderPriceForPairs(props.Dictionary)}
+  </div>
 )
