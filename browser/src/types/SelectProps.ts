@@ -1,10 +1,10 @@
-import { OptionProps } from "./OptionProps";
+import { OptionProps } from "./OptionProps"
 
 export type SelectProps = {
-    name: string
-    title: string
-    value: number | string
-    placeholder: string
-    options: OptionProps[]
-    handleChange: Function
+  name: string
+  title: string
+  value: number | string
+  placeholder: string
+  options: OptionProps[]
+  handleChange: Function
 }

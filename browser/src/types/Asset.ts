@@ -1,5 +1,5 @@
 export type Asset = {
-    id: number
-    name: string
-    symbol: string
+  id: number
+  name: string
+  symbol: string
 }

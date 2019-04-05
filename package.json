@@ -6,10 +6,14 @@
   "scripts": {
     "build-dev": "(cd browser && npm i && cd ../server && npm i)",
     "db:migrate": "(cd server && ./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:run)",
+    "format": "prettier --write \"server/src/**/*.ts\" && prettier --write \"browser/src/**/*.ts\"",
     "webpack:dev": "(cd browser npx webpack --mode development --watch)",
     "server:dev": "(cd server/ && npm run start:dev)",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "prettier": "^1.16.4"
+  }
 }

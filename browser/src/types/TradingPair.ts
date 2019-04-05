@@ -1,7 +1,7 @@
-import { Asset } from "./Asset";
+import { Asset } from "./Asset"
 
 export type TradingPair = {
-    id: number
-    baseAsset: Asset
-    toAsset: Asset
+  id: number
+  baseAsset: Asset
+  toAsset: Asset
 }

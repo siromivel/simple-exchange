@@ -1,5 +1,5 @@
 export type ButtonProps = {
-    title: string
-    action: Function
-    disabled?: boolean
+  title: string
+  action: Function
+  disabled?: boolean
 }
