@@ -37,7 +37,9 @@ export class UserSelector extends PureComponent<
   }
 
   async updateUser(event: React.FormEvent<HTMLSelectElement>) {
-    const user: User = this.state.userList[parseInt(event.currentTarget.value) - 1]
+    const user: User = this.state.userList[
+      parseInt(event.currentTarget.value) - 1
+    ]
     await this.setState({ user })
 
     const fullUser = await fetch(

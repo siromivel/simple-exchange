@@ -12,13 +12,19 @@ import { TradingPair } from "../trading_pair/trading_pair.entity"
 import { Repository } from "typeorm"
 import { Inject } from "@nestjs/common"
 import { RedisService } from "../redis/redis.service"
+import { BittrexWsData } from "../../types/BittrexWsData.type"
+import { BittrexMessage } from "../../types/BittrexMessage.type"
+import { BittrexMessageWrapper } from "../../types/BittrexMessageWrapper"
+import { BittrexLiteSummaryDelta } from "../../types/BittrexLiteSummaryDelta"
+import { Dictionary } from "../../types/Dictionary"
+import { BittrexLiteSummaryDeltas } from "src/types/BittrexLiteSummaryDeltas";
 
 @WebSocketGateway(8080)
 export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server
 
-  pairs: any
+  pairs: Dictionary
   clients = []
 
   constructor(
@@ -75,40 +81,38 @@ export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
         // Try to pull data for all pairs on connect; 95% of the time this call works every time
         trexClient
           .call("c2", "QuerySummaryState")
-          .done((err: Error, result: any) => {
+          .done((err: Error, result: BittrexWsData) => {
             if (err) console.error(err)
             if (result.utf8Data) this.handleMessage(result)
           })
 
         trexClient
           .call("c2", "SubscribeToSummaryLiteDeltas")
-          .done((err: Error, result: any) => {
+          .done((err: Error) => {
             if (err) console.error(err)
-            if (result) console.info("subscribed to bittrex summary deltas")
           })
       },
 
-      messageReceived: (message: any) => {
-        this.handleMessage(message)
+      messageReceived: (update: BittrexWsData) => {
+        this.handleMessage(update)
       },
     }
   }
 
-  private handleMessage(message: any) {
-    // The data is wrapped in a `Message` object exposed as 'M'
+  private handleMessage(message: BittrexWsData) {
+    const parsedMessage: BittrexMessageWrapper = JSON.parse(
+      Buffer.from(message.utf8Data).toString(),
+    )
 
-    let debased = Buffer.from(message.utf8Data)
-    let data = JSON.parse(debased.toString())
+    if (parsedMessage && parsedMessage.M) {
+      parsedMessage.M.forEach((M: BittrexMessage) => {
+        const rawDeltas: Buffer = Buffer.from(M.A[0], "base64")
 
-    if (data && data.M) {
-      data.M.forEach((M: any) => {
-        let delta = Buffer.from(M.A[0], "base64")
-
-        zlib.inflateRaw(delta, (err: Error | null, d) => {
+        zlib.inflateRaw(rawDeltas, (err: Error | null, d) => {
           if (err) console.error(err)
           try {
-            let parsed = JSON.parse(d.toString())
-            if (parsed["D"]) this.updatePrices(parsed["D"])
+            const deltas: BittrexLiteSummaryDeltas = JSON.parse(d.toString())
+            if (deltas.D) this.updatePrices(deltas.D)
           } catch (e) {
             console.error(e)
           }
@@ -117,14 +121,10 @@ export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  private async updatePrices(priceData: any[]) {
-    //   Each "pair" is a Lite Summary Delta from Bittrex:
-    //   (https://bittrex.github.io/api/v1-1#definition-Lite-Summary-Delta---uL)
-    //   M => MarketName
-    //   l => Last
+  private async updatePrices(priceData: BittrexLiteSummaryDelta[]) {
     if (this.pairs) {
       priceData.forEach(pair => {
-        if (this.pairs[pair["M"]]) this.pairs[pair["M"]].price = pair["l"]
+        if (this.pairs[pair.M]) this.pairs[pair.M].price = pair.l
       })
 
       await this.redisService.redis.set(
