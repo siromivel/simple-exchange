@@ -26,10 +26,12 @@ export class TradingPairSelector extends PureComponent<{ onSelectTradingPair: Fu
         const options: OptionProps[] = []
 
         for (const pairName in this.props.pairMap) {
-            options.push({
-                title: `${this.props.pairMap[pairName].pair.baseAsset.symbol}:${this.props.pairMap[pairName].pair.toAsset.symbol}`,
-                value: pairName
-            })
+            if (this.props.pairMap[pairName].price) {
+                options.push({
+                    title: `${this.props.pairMap[pairName].pair.baseAsset.symbol}:${this.props.pairMap[pairName].pair.toAsset.symbol}`,
+                    value: pairName
+                })
+            }
         }
         return options
     }

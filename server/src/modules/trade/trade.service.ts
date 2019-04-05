@@ -25,13 +25,12 @@ export class TradeService {
     trade.user = await this.userRepository.findOneOrFail(tradeDto.userId)
     trade.tradingPair = await this.tradingPairRepository.findOneOrFail({
       relations: ["baseAsset", "toAsset"],
-      where: { tradingPairId: tradeDto.tradingPairId },
+      where: { id: tradeDto.tradingPairId },
     })
 
-    const holdings: {} = await this.getUserHoldings(
-      trade.tradingPair,
-      trade.user.id,
-    ).then(async holdings => await this.updateHoldings(trade, holdings))
+    const holdings: {} = await this.getUserHoldings(trade.user.id).then(
+      async holdings => await this.updateHoldings(trade, holdings),
+    )
 
     return this.saveTradeAndHoldings(trade, holdings)
   }
@@ -52,10 +51,7 @@ export class TradeService {
     })
   }
 
-  private async getUserHoldings(
-    pair: TradingPair,
-    userId: number,
-  ): Promise<{}> {
+  private async getUserHoldings(userId: number): Promise<{}> {
     return this.userRepository
       .findOne({
         relations: ["holdings", "holdings.asset"],
@@ -63,10 +59,7 @@ export class TradeService {
       })
       .then(user => {
         return user.holdings.reduce((acc, holding) => {
-          const symbol = [pair.baseAsset, pair.toAsset].find(
-            asset => asset.id === holding.asset.id,
-          ).symbol
-          acc[symbol] = holding
+          acc[holding.asset.symbol] = holding
           return acc
         }, {})
       })

@@ -34,6 +34,7 @@ export class TradeDisplay extends PureComponent<{ userId: number, pairMap: any }
 
     async handleSubmitTrade() {
         this.setState({ tradeExecuted: false, tradeExecutionError: false })
+
         const trade: Trade = {
             type: this.state.type,
             price: this.props.pairMap[this.state.activePair].price,

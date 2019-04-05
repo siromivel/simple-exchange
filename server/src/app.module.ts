@@ -18,7 +18,7 @@ import { tradingPairProviders } from "./modules/trading_pair/trading_pair.provid
 import { UserController } from "./modules/user/user.controller"
 import { UserModule } from "./modules/user/user.module"
 import { userProviders } from "./modules/user/user.providers"
-import { PriceModule } from "./modules/price/price.module";
+import { PriceModule } from "./modules/price/price.module"
 
 @Module({
   imports: [

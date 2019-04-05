@@ -4,7 +4,7 @@ import { Prices } from "../types/Prices";
 const renderPriceForPairs = (pairMap: any): any => {
     const priceElements = []
     for (const pair in pairMap) {
-        priceElements.push(<div>{pair}: {pairMap[pair].price.toFixed(8)}</div>)
+        priceElements.push(<div>{pair}: {pairMap[pair].price ? pairMap[pair].price.toFixed(8) : ""}</div>)
     }
     return priceElements
 }
