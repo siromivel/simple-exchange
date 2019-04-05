@@ -1,4 +1,8 @@
-import { Injectable, UnprocessableEntityException } from "@nestjs/common"
+import {
+  Injectable,
+  UnprocessableEntityException,
+  Inject,
+} from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { Repository, getConnection } from "typeorm"
 import { Trade } from "./trade.entity"
@@ -6,10 +10,13 @@ import { User } from "../user/user.entity"
 import { TradingPair } from "../trading_pair/trading_pair.entity"
 import { TradeDto } from "./trade.dto"
 import { Holding } from "../holding/holding.entity"
+import { RedisService } from "../redis/redis.service"
 
 @Injectable()
 export class TradeService {
   constructor(
+    @Inject("RedisService")
+    private readonly redisService: RedisService,
     @InjectRepository(Holding)
     private readonly holdingRepository: Repository<Holding>,
     @InjectRepository(Trade)
@@ -102,6 +109,13 @@ export class TradeService {
     const baseSymbol = trade.tradingPair.baseAsset.symbol
     const toSymbol = trade.tradingPair.toAsset.symbol
 
+    const latestQuote = await this.redisService.redis
+      .get("latest_prices")
+      .then((data: string) => JSON.parse(data)[`${baseSymbol}-${toSymbol}`])
+
+    if (!latestQuote || !latestQuote.price || trade.price !== latestQuote.price)
+      throw new UnprocessableEntityException("Invalid Price", "INVALID_PRICE")
+
     if (!holdings[baseSymbol])
       holdings[baseSymbol] = await this.createHoldingForTrade(baseSymbol, trade)
     if (!holdings[toSymbol])
@@ -116,6 +130,7 @@ export class TradeService {
       if (baseBalance - quantity * price < 0)
         throw new UnprocessableEntityException(
           `Insufficient ${baseSymbol} to execute trade`,
+          `INSUFFICIENT_FUNDS`,
         )
       holdings[baseSymbol].balance -= quantity * price
       holdings[toSymbol].balance += quantity
@@ -123,6 +138,7 @@ export class TradeService {
       if (toBalance - quantity < 0)
         throw new UnprocessableEntityException(
           `Insufficient ${toSymbol} to execute trade`,
+          `INSUFFICIENT_FUNDS`,
         )
       holdings[toSymbol].balance -= quantity
       holdings[baseSymbol].balance += quantity * price

@@ -59,7 +59,7 @@ export class TradeDisplay extends PureComponent<
     }
 
     if (trade.type) {
-      await fetch("http://localhost:3000/trades/trade", {
+      await fetch(`${process.env.REST_API}/trades/trade`, {
         method: "POST",
         mode: "cors",
         headers: { "Content-Type": "application/json" },
@@ -77,7 +77,7 @@ export class TradeDisplay extends PureComponent<
         )
 
       return this.props.onTrade(
-        await fetch(`http://localhost:3000/users/${this.props.user.id}`).then(
+        await fetch(`${process.env.REST_API}/users/${this.props.user.id}`).then(
           response => response.json(),
         ),
       )
@@ -131,11 +131,11 @@ export class TradeDisplay extends PureComponent<
         <Input
           name="quantity"
           title="quantity"
-          type="number"
+          type="text"
           min={0}
           max={1000000000}
           handleChange={this.handleQuantityChange}
-          placeholder="0"
+          placeholder=""
           value={this.state.quantity}
         />
         <Button

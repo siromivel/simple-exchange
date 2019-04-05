@@ -9,6 +9,8 @@ import { HoldingController } from "./modules/holding/holding.controller"
 import { HoldingModule } from "./modules/holding/holding.module"
 import { holdingProviders } from "./modules/holding/holding.providers"
 import { PriceGateway } from "./modules/price/price.gateway"
+import { PriceModule } from "./modules/price/price.module"
+import { RedisModule } from "./modules/redis/redis.module"
 import { TradeController } from "./modules/trade/trade.controller"
 import { TradeModule } from "./modules/trade/trade.module"
 import { tradeProviders } from "./modules/trade/trade.providers"
@@ -18,13 +20,13 @@ import { tradingPairProviders } from "./modules/trading_pair/trading_pair.provid
 import { UserController } from "./modules/user/user.controller"
 import { UserModule } from "./modules/user/user.module"
 import { userProviders } from "./modules/user/user.providers"
-import { PriceModule } from "./modules/price/price.module"
 
 @Module({
   imports: [
     AssetModule,
     HoldingModule,
     PriceModule,
+    RedisModule,
     TradeModule,
     TradingPairModule,
     TypeOrmModule.forRoot(),

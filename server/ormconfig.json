@@ -8,6 +8,13 @@
     "entities": ["src/**/*.entity{.ts,.js}"],
     "synchronize": false,
     "migrations": ["migrations/*.ts"],
+    "cache": {
+      "type": "ioredis",
+      "options": {
+        "host": "localhost",
+        "port": 6379
+      }
+    },
     "cli": {
       "migrationsDir": "migrations"
     }

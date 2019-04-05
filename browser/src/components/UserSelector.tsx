@@ -19,7 +19,7 @@ export class UserSelector extends PureComponent<
   }
 
   async componentDidMount() {
-    const userList = await fetch("http://localhost:3000/users").then(
+    const userList = await fetch(`${process.env.REST_API}/users`).then(
       (response: Response) => response.json(),
     )
     await this.setState({ userList })
@@ -40,9 +40,9 @@ export class UserSelector extends PureComponent<
     const user: User = this.state.userList[event.target.value - 1]
     await this.setState({ user })
 
-    const fullUser = await fetch(`http://localhost:3000/users/${user.id}`).then(
-      response => response.json(),
-    )
+    const fullUser = await fetch(
+      `${process.env.REST_API}/users/${user.id}`,
+    ).then(response => response.json())
     await this.props.onSelectUser(fullUser)
   }
 

@@ -27,7 +27,7 @@ export class App extends PureComponent<
   }
 
   private openSocket() {
-    const socket = io("ws://localhost:8080")
+    const socket = io(`${process.env.WS_SERVER}`)
     socket.on("price", (pairMap: Dictionary) =>
       this.setState({ pairMap, pairDataLoaded: true }),
     )
@@ -50,7 +50,7 @@ export class App extends PureComponent<
         {this.state.user && this.state.pairDataLoaded
           ? [
               <PortfolioDisplay
-                Dictionary={this.state.pairMap}
+                pairMap={this.state.pairMap}
                 user={this.state.user}
               />,
               <TradeDisplay

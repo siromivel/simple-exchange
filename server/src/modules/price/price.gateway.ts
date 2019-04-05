@@ -10,6 +10,8 @@ import * as zlib from "zlib"
 import { InjectRepository } from "@nestjs/typeorm"
 import { TradingPair } from "../trading_pair/trading_pair.entity"
 import { Repository } from "typeorm"
+import { Inject } from "@nestjs/common"
+import { RedisService } from "../redis/redis.service"
 
 @WebSocketGateway(8080)
 export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -20,6 +22,8 @@ export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
   clients = []
 
   constructor(
+    @Inject("RedisService")
+    private readonly redisService: RedisService,
     @InjectRepository(TradingPair)
     private readonly tradingPairRepository: Repository<TradingPair>,
   ) {
@@ -58,9 +62,8 @@ export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   private async subscribeToPriceFeed() {
     this.pairs = await this.getSupportedTradingPairs()
-
     const trexClient = new SignalR.client(
-      "wss://socket.bittrex.com/signalr",
+      process.env.BITTREX_WS,
       ["c2"],
       10,
       true,
@@ -123,6 +126,11 @@ export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
       priceData.forEach(pair => {
         if (this.pairs[pair["M"]]) this.pairs[pair["M"]].price = pair["l"]
       })
+
+      await this.redisService.redis.set(
+        "latest_prices",
+        JSON.stringify(this.pairs),
+      )
       this.server.emit("price", this.pairs)
     }
   }

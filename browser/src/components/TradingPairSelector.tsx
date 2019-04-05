@@ -23,14 +23,6 @@ export class TradingPairSelector extends PureComponent<{
     this.updateTradingPair = this.updateTradingPair.bind(this)
   }
 
-  async componentDidMount() {
-    const tradingPairList = await fetch("http://localhost:3000/pairs")
-      .then((response: Response) => response.json())
-      .then(json => json.sort((pair: TradingPair) => pair.id))
-
-    await this.setState({ tradingPairList })
-  }
-
   getTradingPairOptions(): OptionProps[] {
     const options: OptionProps[] = []
 
