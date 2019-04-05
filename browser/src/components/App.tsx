@@ -6,6 +6,7 @@ import { UserSelector } from "./UserSelector"
 import io from "socket.io-client"
 import { User } from "../types/User"
 import { Dictionary } from "../types/Dictionary"
+import { CreateUser } from "./CreateUser"
 
 export class App extends PureComponent<
   {},
@@ -19,7 +20,7 @@ export class App extends PureComponent<
       pairDataLoaded: false,
     }
 
-    this.handleUser = this.handleUser.bind(this)
+    this.handleUserChange = this.handleUserChange.bind(this)
   }
 
   componentDidMount() {
@@ -34,14 +35,19 @@ export class App extends PureComponent<
     socket.on("disconnect", this.openSocket)
   }
 
-  async handleUser(user: User) {
+  async handleUserChange(user: User) {
     await this.setState({ user })
   }
 
   render() {
     return (
       <div className="main">
-        <UserSelector onSelectUser={this.handleUser} />
+        <UserSelector user={this.state.user} onSelectUser={this.handleUserChange} />
+        {!this.state.user ? (
+          <CreateUser onCreateUser={this.handleUserChange} />
+        ) : (
+          ""
+        )}
         {this.state.pairDataLoaded ? (
           <PriceDisplay Dictionary={this.state.pairMap} />
         ) : (
@@ -56,7 +62,7 @@ export class App extends PureComponent<
               <TradeDisplay
                 user={this.state.user}
                 pairMap={this.state.pairMap}
-                onTrade={this.handleUser}
+                onTrade={this.handleUserChange}
               />,
             ]
           : ""}

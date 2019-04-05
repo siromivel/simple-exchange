@@ -4,25 +4,41 @@ import { User } from "../types/User"
 import { OptionProps } from "../types/OptionProps"
 
 export class UserSelector extends PureComponent<
-  { onSelectUser: Function },
-  { user: User | null; userList: [] }
+  { onSelectUser: Function, user: User | null },
+  { user: User | null; userList: [], userOptions: OptionProps[] }
 > {
-  constructor(props: { onSelectUser: Function }) {
+  constructor(props: { onSelectUser: Function, user: User | null }) {
     super(props)
 
     this.state = {
-      user: null,
+      user: this.props.user,
       userList: [],
+      userOptions: []
     }
 
     this.updateUser = this.updateUser.bind(this)
   }
 
   async componentDidMount() {
+    await this.updateUserList()
+    await this.updateUserOptions()
+  }
+
+  async componentWillReceiveProps() {
+    await this.updateUserList().then(() => this.updateUserOptions)
+    await this.setState({ user: this.props.user })
+  }
+
+  async updateUserList() {
     const userList = await fetch(`${process.env.REST_API}/users`).then(
       (response: Response) => response.json(),
     )
     await this.setState({ userList })
+  }
+
+  async updateUserOptions() {
+    const userOptions = this.getUserOptions()
+    await this.setState({ userOptions })
   }
 
   getUserOptions(): OptionProps[] {

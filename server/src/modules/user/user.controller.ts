@@ -17,8 +17,8 @@ export class UserController {
     return this.userService.findOne(id)
   }
 
-  @Post(":new")
-  async createUser(@Body("userDto") userDto: UserDto): Promise<User> {
+  @Post("new")
+  async createUser(@Body("") userDto: UserDto): Promise<User> {
     return this.userService.createAndSave(userDto)
   }
 }
