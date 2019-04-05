@@ -12,14 +12,37 @@ export class PortfolioDisplay extends PureComponent<{
     super(props)
   }
 
-  calculatePortfolioValue() {
+  calculatePortfolioBTCValue() {
     return this.props.user.holdings.reduce(
-      (sum, holding) => sum + this.calculateUsdValueOfHolding(holding),
+      (sum, holding) => sum + this.calculateBTCValueOfHolding(holding),
       0,
     )
   }
 
-  calculateUsdValueOfHolding(holding: Holding): number {
+  calculatePortfolioUSDValue() {
+    return this.props.user.holdings.reduce(
+      (sum, holding) => sum + this.calculateUSDValueOfHolding(holding),
+      0,
+    )
+  }
+
+  calculateBTCValueOfHolding(holding: Holding): number {
+    const BTCPrice = this.props.Dictionary["USD-BTC"].price
+
+    if (holding.asset.symbol === "BTC") return holding.balance
+    if (holding.asset.symbol === "USD") return holding.balance / BTCPrice
+
+    for (const pair in this.props.Dictionary) {
+      if (
+        this.props.Dictionary[pair].pair.toAsset.symbol === holding.asset.symbol
+      ) {
+        return holding.balance * this.props.Dictionary[pair].price
+      }
+    }
+    return 0
+  }
+
+  calculateUSDValueOfHolding(holding: Holding): number {
     const BTCPrice = this.props.Dictionary["USD-BTC"].price
 
     if (holding.asset.symbol === "USD") return holding.balance
@@ -46,7 +69,11 @@ export class PortfolioDisplay extends PureComponent<{
         </h2>
         <HoldingsList holdings={this.props.user.holdings} />
         <h4>
-          Total Portfolio Value in US Dollars: {this.calculatePortfolioValue()}
+          Total Portfolio Value in Bitcoin: {this.calculatePortfolioBTCValue()}
+        </h4>
+        <h4>
+          Total Portfolio Value in US Dollars:{" "}
+          {this.calculatePortfolioUSDValue()}
         </h4>
       </div>
     )
